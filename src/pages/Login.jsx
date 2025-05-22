@@ -73,7 +73,7 @@ const Login = () => {
       className="w-full border rounded-lg p-3 pl-10 pr-10 focus:outline-none"
     />
 
-    {/* Right-side eye toggle icon */}
+    {/* Right-side eye toggle iconn */}
     <button
       type="button"
       onClick={() => setShowPassword(!showPassword)}
