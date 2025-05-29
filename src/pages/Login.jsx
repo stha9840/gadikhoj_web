@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import { FaEnvelope, FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
 
@@ -95,11 +96,11 @@ const Login = () => {
 
           {/* -------- Sign Up Link -------- */}
           <p className="text-sm text-gray-700 mb-6">
-            Don’t have an account?{" "}
-            <a href="#" className="text-blue-600 font-semibold hover:underline">
-              Create account
-            </a>
-          </p>
+  Don’t have an account?{" "}
+  <Link to="/signup" className="text-blue-600 font-semibold hover:underline">
+    Create account
+  </Link>
+</p>
 
           {/* Divider */}
           <div className="text-center text-sm text-gray-400 mb-6">or</div>
