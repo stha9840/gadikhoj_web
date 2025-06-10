@@ -19,7 +19,6 @@ const Dashboard = () => {
         <SidebarItem icon={<FaUser />} label="User" />
         <SidebarItem icon={<FaCar />} label="Car Inventory" />
         <SidebarItem icon={<FaBook />} label="Booking" />
-
         <h2 className="text-xl font-bold mt-8">OTHER</h2>
         <SidebarItem icon={<FaMoneyBillWave />} label="Payments and Transactions" />
         <SidebarItem icon={<FaInbox />} label="Messages" />
