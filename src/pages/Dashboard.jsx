@@ -11,7 +11,7 @@ const SidebarItem = ({ icon, label }) => (
 
 const Dashboard = () => {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen w-screen"> {/* full viewport width and height */}
       {/* Sidebar */}
       <aside className="w-64 bg-indigo-900 p-4 space-y-6 text-white">
         <h2 className="text-xl font-bold">MAIN</h2>
@@ -23,13 +23,12 @@ const Dashboard = () => {
         <SidebarItem icon={<FaMoneyBillWave />} label="Payments and Transactions" />
         <SidebarItem icon={<FaInbox />} label="Messages" />
         <SidebarItem icon={<FaChartLine />} label="Analytics & Reports" />
-
         <h2 className="text-xl font-bold mt-8">SETTING</h2>
         <SidebarItem icon={<FaCog />} label="Settings" />
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-gray-100 p-6">
+      <main className="flex-1 min-w-0 bg-gray-100 p-6 overflow-auto">
         <h1 className="text-2xl font-semibold mb-6">Dashboard</h1>
 
         {/* Cards */}
