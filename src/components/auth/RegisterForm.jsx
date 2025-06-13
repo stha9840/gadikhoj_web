@@ -45,10 +45,10 @@ const RegisterForm = () => {
   };
 
   return (
-    <form className="w-full max-w-sm" onSubmit={handleSubmit}>
+    <form className="w-full max-w-sm " onSubmit={handleSubmit}>
       {/* Username Field */}
       <div className="mb-4">
-        <label htmlFor="username" className="block text-sm font-medium mb-1">
+        <label htmlFor="username" className="block text-sm font-medium mb-">
           Username <span className="text-red-500">*</span>
         </label>
         <div className="relative">
@@ -111,7 +111,7 @@ const RegisterForm = () => {
       </div>
 
       {/* Confirm Password Field */}
-      <div className="mb-6">
+      <div className="mb-3">
         <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">
           Confirm Password <span className="text-red-500">*</span>
         </label>

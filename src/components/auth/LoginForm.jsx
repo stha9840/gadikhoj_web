@@ -37,10 +37,10 @@ const LoginForm = () => {
       <form onSubmit={formik.handleSubmit}>
         {/* -------- Email Field -------- */}
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">
+          <label className="block text-sm font-medium mb-1">
             Email <span className="text-red-500">*</span>
           </label>
-          <div className="relative">
+          <div className="relative pl">
             <input
               type="email"
               name="email"
@@ -61,7 +61,7 @@ const LoginForm = () => {
 
         {/* -------- Password Field -------- */}
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">
+          <label className="block text-sm font-medium mb-1">
             Password <span className="text-red-500">*</span>
           </label>
           <div className="relative">
@@ -104,7 +104,7 @@ const LoginForm = () => {
       </form>
 
       {/* -------- Sign Up Link -------- */}
-      <p className="text-sm text-gray-700 mb-6">
+      <p className="text-sm text-gray-700 mb-5">
         Don’t have an account?{" "}
         <Link
           to="/register"
