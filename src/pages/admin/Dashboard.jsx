@@ -26,7 +26,7 @@ const Dashboard = () => {
         <h2 className="text-xl font-bold mt-8">SETTING</h2>
         <SidebarItem icon={<FaCog />} label="Settings" />
       </aside>
-
+    
       {/* Main Content */}
       <main className="flex-1 min-w-0 bg-gray-100 p-6 overflow-auto">
         <h1 className="text-2xl font-semibold mb-6">Dashboard</h1>
