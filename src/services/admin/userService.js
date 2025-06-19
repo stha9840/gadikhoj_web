@@ -1,10 +1,46 @@
-import { getAllUserApi } from "../../api/admin/userApi";
+import { 
+  getAllUserApi, 
+  createOneUserApi, 
+  updateOneUserApi, 
+  deleteOneUserApi 
+} from "../../api/admin/userApi";
 
-export const getAllUserService = async (params) =>{
-    try{
-        const response = await getAllUserApi(params)
-        return response.data
-    }catch(err){
-        throw err.response?.data || {'message' : ' User Fetch Fail'}
-    }
-}
+// Fetch all users
+export const getAllUserService = async (params) => {
+  try {
+    const response = await getAllUserApi(params);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || { message: "User Fetch Fail" };
+  }
+};
+
+// Create a new user
+export const createUserService = async (data) => {
+  try {
+    const response = await createOneUserApi(data);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || { message: "User Creation Failed" };
+  }
+};
+
+// Update a user by ID
+export const updateUserService = async (id, data) => {
+  try {
+    const response = await updateOneUserApi(id, data);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || { message: "User Update Failed" };
+  }
+};
+
+// Delete a user by ID
+export const deleteUserService = async (id) => {
+  try {
+    const response = await deleteOneUserApi(id);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || { message: "User Deletion Failed" };
+  }
+};
