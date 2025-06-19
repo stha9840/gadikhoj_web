@@ -4,6 +4,8 @@ import Login from "../pages/LoginPage";
 import Register from "../pages/RegisterPage";// optional
 import Dashboard from "../pages/admin/Dashboard";
 import HomePage from "../pages/HomePage";
+import UserTable from "../components/admin/UserTable"; // adjust path if needed
+
 
 const AppRouter = () => {
   return (
@@ -14,6 +16,8 @@ const AppRouter = () => {
       <Route path="/register" element={<Register />} />
        <Route path = "/home" element = {<HomePage/>}></Route>
       <Route path = "/dashboard" element = {<Dashboard/>}></Route>
+      <Route path="/dashboard/users" element={<UserTable />} />
+
 
       {/* Optional: catch all unmatched routes */}
       
