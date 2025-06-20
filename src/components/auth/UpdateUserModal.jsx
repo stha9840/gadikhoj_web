@@ -6,7 +6,7 @@ import { useUpdateOneUser, useGetOneUser } from "../../hooks/admin/useAdminUser"
 
 export default function UpdateUserModal({ userId, showModal, onClose, onSuccess }) {
   const updateUserHook = useUpdateOneUser();
-  const { data: user, isPending, error } = useGetOneUser(userId); // ✅ Fix here
+  const { user, isPending, error } = useGetOneUser(userId); // ✅ fixed destructuring
 
   const validationSchema = Yup.object({
     username: Yup.string().required("Username is required"),
@@ -50,7 +50,7 @@ export default function UpdateUserModal({ userId, showModal, onClose, onSuccess 
         <h2 className="text-xl font-semibold mb-4">Update User</h2>
 
         {isPending ? (
-          <p>Loading...</p>
+          <p>Loading user...</p>
         ) : error ? (
           <p className="text-red-500">Error loading user</p>
         ) : (

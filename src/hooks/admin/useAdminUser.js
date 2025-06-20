@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 //useQuery -> Get request state
 import { useState } from "react";
-import { getAllUserService, createUserService, updateUserService, deleteUserService } from "../../services/admin/userService";
+import { getAllUserService, createUserService, updateUserService, deleteUserService, getOneUserService } from "../../services/admin/userService";
 
 export const useAdminUser = (page = 1, limit = 5) => {
   const query = useQuery({
@@ -44,15 +44,22 @@ export const useUpdateOneUser = () => {
   })
 }
 export const useGetOneUser = (id) => {
-  return useQuery({
+  const query = useQuery({
     queryKey: ["admin_user_details", id],
-    queryFn: async () => {
-      const response = await axios.get(`/api/admin/user/${id}`);
-      return response.data;
-    },
-    enabled: !!id, // prevents query from running without an ID
+    queryFn: () => getOneUserService(id),
+    enabled: !!id,
+    retry: false,
   });
+
+  const user = query.data?.data || {};
+
+  return {
+    ...query,
+    user,
+  };
 };
+
+
 export const useDeleteOneUser = () =>{
   const queryClient = useQueryClient()
   return useMutation(
