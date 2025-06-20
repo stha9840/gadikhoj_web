@@ -9,8 +9,7 @@ import UserTable from "../components/admin/UserTable"; // adjust path if needed
 import VehicleDetailsTable from "../components/admin/VehicleDetailsTable";
 import CreateVehicleForm from "../pages/admin/CreateVehicleForm";
 import MainLayout from "../layouts/admin/MainLayout";
-import User from "../components/admin/User";
-import CarInventory from "../components/admin/CarInventory";
+
 
 
 const AppRouter = () => {
@@ -23,6 +22,7 @@ const AppRouter = () => {
         <Route index element={<Dashboard/>}/>
         <Route path="dashboard" element={<Dashboard/>}/>
         <Route path="users" element={<UserTable />} />
+        <Route path="vehicles" element={<VehicleDetailsTable />} />
         <Route path="vehicles" element={<VehicleDetailsTable />} />
         <Route path="vehicles/create" element={<CreateVehicleForm />} />
       </Route>

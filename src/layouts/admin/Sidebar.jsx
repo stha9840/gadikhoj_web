@@ -20,7 +20,7 @@ const Sidebar = () => (
   <aside className="w-64 bg-indigo-900 p-4 space-y-6 text-white">
     <h2 className="text-xl font-bold">MAIN</h2>
     <SidebarItem icon={<FaChartLine />} label="Dashboard" to="/admin/dashboard" />
-    <SidebarItem icon={<FaUser />} label="User" to="/admin/user" />
+    <SidebarItem icon={<FaUser />} label="User" to="/admin/users" />
     <SidebarItem icon={<FaCar />} label="Car Inventory" to="/admin/vehicles" />
     <SidebarItem icon={<FaBook />} label="Booking" />
     <h2 className="text-xl font-bold mt-8">OTHER</h2>

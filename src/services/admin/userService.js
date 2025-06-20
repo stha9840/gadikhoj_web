@@ -44,3 +44,11 @@ export const deleteUserService = async (id) => {
     throw err.response?.data || { message: "User Deletion Failed" };
   }
 };
+export const getOneCategoryService = async (id) => {
+    try{
+        const response = await getOneCategoryApi(id)
+        return response.data
+    }catch(err){
+        throw err.response?.data || { message: 'Failed to load'}
+    }
+} 
