@@ -5,7 +5,7 @@ import Register from "../pages/RegisterPage";// optional
 import Dashboard from "../pages/admin/Dashboard";
 import HomePage from "../pages/HomePage";
 import UserTable from "../components/admin/UserTable"; // adjust path if needed
-import VehicleDetailsTable from "../components/admin/VehicelDetailsTable";
+import VehicleDetailsTable from "../components/admin/VehicleDetailsTable";
 
 
 const AppRouter = () => {
