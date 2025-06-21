@@ -11,26 +11,27 @@ export default function DeleteModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      onClick={onClose} // Close modal if clicking outside the box
+      className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 backdrop-blur-[1px]"
+      onClick={onClose}
     >
       <div
-        className="bg-white p-6 rounded shadow-lg w-[320px]"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+        className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 mx-4 transform transition-transform duration-300 hover:scale-[1.03]"
+        onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-semibold mb-4">{title}</h2>
-        <p className="mb-6">{description}</p>
+        <h2 className="text-xl font-semibold text-gray-900 mb-3">{title}</h2>
+        <p className="text-gray-600 mb-6">{description}</p>
 
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-end space-x-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
+            className="px-5 py-2 rounded-md bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+            className="px-5 py-2 rounded-md bg-red-600 text-white font-semibold hover:bg-red-700 shadow-md transition"
+            autoFocus
           >
             Delete
           </button>

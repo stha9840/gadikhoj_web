@@ -3,32 +3,38 @@ import { FaPlus, FaTrash, FaEdit } from 'react-icons/fa';
 import { useAdminUser, useDeleteOneUser } from '../../hooks/admin/useAdminUser';
 import CreateUserModal from '../../components/auth/CreateUserModal'; // ✅ import the modal component
 import UpdateUserModal from '../auth/UpdateUserModal';
+import DeleteModal from '../../components/auth/DeleteModal'; // ✅ import DeleteModal
+
 export default function UserTable() {
   const [page, setPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [deleteId, setDeleteId] = useState(null); // track user to delete
 
   const limit = 5;
   const { data, isPending, error, refetch } = useAdminUser(page, limit);
   const deleteMutation = useDeleteOneUser();
 
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteMutation.mutate(id, {
-        onSuccess: () => {
-          alert('User deleted successfully');
-          refetch();
-        },
-        onError: (err) => alert('Failed to delete user: ' + (err.message || 'Unknown error')),
-      });
-    }
+  const handleDelete = () => {
+    deleteMutation.mutate(deleteId, {
+      onSuccess: () => {
+        alert('User deleted successfully');
+        refetch();
+        setDeleteId(null); // close delete modal
+      },
+      onError: (err) => alert('Failed to delete user: ' + (err.message || 'Unknown error')),
+    });
   };
 
   const openUpdateModal = (id) => {
     setSelectedUserId(id);
     setShowUpdateModal(true);
   };
+
+  if (isPending) return <p>Loading users...</p>;
+  if (error) return <p>Error loading users: {error.message}</p>;
+  if (!data?.data?.length) return <p>No users found.</p>;
 
   return (
     <div className="w-full">
@@ -53,22 +59,28 @@ export default function UserTable() {
             </tr>
           </thead>
           <tbody>
-            {data?.data?.map((user) => (
-              <tr key={user._id} className="group transition-all hover:scale-[1.01] hover:shadow-md duration-200 ease-in-out">
+            {data.data.map((user) => (
+              <tr
+                key={user._id}
+                className="group transition-all hover:scale-[1.01] hover:shadow-md duration-200 ease-in-out"
+              >
                 <td className="px-6 py-4 border-b">{user.username}</td>
                 <td className="px-6 py-4 border-b">{user.email}</td>
                 <td className="px-6 py-4 border-b capitalize">{user.role}</td>
                 <td className="px-6 py-4 border-b">
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-2">
                     <button
-                      onClick={() => handleDelete(user._id)}
-                      disabled={deleteMutation.isLoading}
+                      onClick={() => setDeleteId(user._id)} // open DeleteModal
+                      disabled={deleteMutation.isLoading && deleteId === user._id}
                       className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded flex items-center gap-1 text-xs"
                     >
-                      <FaTrash /> {deleteMutation.isLoading ? 'Deleting...' : 'Delete'}
+                      <FaTrash />
+                      {deleteMutation.isLoading && deleteId === user._id
+                        ? 'Deleting...'
+                        : 'Delete'}
                     </button>
                     <button
-                      onClick={() => openUpdateModal(user._id)} // ✅ open update modal
+                      onClick={() => openUpdateModal(user._id)}
                       className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded flex items-center gap-1 text-xs"
                     >
                       <FaEdit /> Update
@@ -93,7 +105,9 @@ export default function UserTable() {
           Page {page} of {Math.ceil((data?.total || 0) / limit)}
         </span>
         <button
-          onClick={() => setPage((prev) => Math.min(prev + 1, Math.ceil((data?.total || 0) / limit)))}
+          onClick={() =>
+            setPage((prev) => Math.min(prev + 1, Math.ceil((data?.total || 0) / limit)))
+          }
           disabled={page === Math.ceil((data?.total || 0) / limit)}
           className="bg-gray-200 hover:bg-gray-300 px-4 py-1 rounded disabled:opacity-50"
         >
@@ -119,6 +133,15 @@ export default function UserTable() {
           setSelectedUserId(null);
         }}
         onSuccess={refetch}
+      />
+
+      {/* Delete Modal */}
+      <DeleteModal
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDelete}
+        title="Delete User"
+        description="Are you sure you want to delete this user? This action cannot be undone."
       />
     </div>
   );

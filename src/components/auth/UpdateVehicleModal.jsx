@@ -2,48 +2,35 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import { useGetOneVehicle, useUpdateVehicle } from "../../hooks/admin/useAdminVehicle";
+import { useUpdateVehicle, useGetOneVehicle } from "../../hooks/admin/useAdminVehicle";
 
-export default function UpdateVehicleModal({ vehicleId, showModal, onClose }) {
-  const { vehicle, isLoading, isError, error } = useGetOneVehicle(vehicleId);
-  const updateMutation = useUpdateVehicle();
+export default function UpdateVehicleModal({ vehicleId, showModal, onClose, onSuccess }) {
+  const { vehicle, isLoading, error } = useGetOneVehicle(vehicleId);
+  const updateVehicle = useUpdateVehicle();
 
-  // Validation schema
   const validationSchema = Yup.object({
     vehicleName: Yup.string().required("Vehicle name is required"),
     vehicleType: Yup.string().required("Vehicle type is required"),
-    fuelCapacityLitres: Yup.number()
-      .required("Fuel capacity is required")
-      .positive("Must be positive")
-      .integer("Must be an integer"),
-    loadCapacityKg: Yup.number()
-      .required("Load capacity is required")
-      .positive("Must be positive")
-      .integer("Must be an integer"),
-    passengerCapacity: Yup.number()
-      .required("Passenger capacity is required")
-      .positive("Must be positive")
-      .integer("Must be an integer"),
-    pricePerTrip: Yup.number()
-      .required("Price per trip is required")
-      .positive("Must be positive"),
-    // filepath is handled via file input, no validation here
+    fuelCapacityLitres: Yup.number().required("Fuel capacity is required").positive(),
+    loadCapacityKg: Yup.number().required("Load capacity is required").positive(),
+    passengerCapacity: Yup.string().required("Passenger capacity is required"),
+    pricePerTrip: Yup.number().required("Price per trip is required").positive(),
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      vehicleName: vehicle.vehicleName || "",
-      vehicleType: vehicle.vehicleType || "",
-      fuelCapacityLitres: vehicle.fuelCapacityLitres || "",
-      loadCapacityKg: vehicle.loadCapacityKg || "",
-      passengerCapacity: vehicle.passengerCapacity || "",
-      pricePerTrip: vehicle.pricePerTrip || "",
-      filepath: null, // For new file upload
+      vehicleName: vehicle?.vehicleName || "",
+      vehicleType: vehicle?.vehicleType || "",
+      fuelCapacityLitres: vehicle?.fuelCapacityLitres || "",
+      loadCapacityKg: vehicle?.loadCapacityKg || "",
+      passengerCapacity: vehicle?.passengerCapacity || "",
+      pricePerTrip: vehicle?.pricePerTrip || "",
+      imageFile: null, // for new image upload
     },
     validationSchema,
     onSubmit: (values, { setSubmitting }) => {
-      // Prepare form data for multipart/form-data
+      // Prepare FormData for multipart
       const formData = new FormData();
       formData.append("vehicleName", values.vehicleName);
       formData.append("vehicleType", values.vehicleType);
@@ -51,20 +38,20 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose }) {
       formData.append("loadCapacityKg", values.loadCapacityKg);
       formData.append("passengerCapacity", values.passengerCapacity);
       formData.append("pricePerTrip", values.pricePerTrip);
-
-      if (values.filepath) {
-        formData.append("image", values.filepath); // "image" is the backend multer field name
+      if (values.imageFile) {
+        formData.append("image", values.imageFile);
       }
 
-      updateMutation.mutate(
+      updateVehicle.mutate(
         { id: vehicleId, data: formData },
         {
           onSuccess: () => {
             toast.success("Vehicle updated successfully");
             onClose();
+            if (onSuccess) onSuccess();
           },
           onError: (err) => {
-            toast.error(err.message || "Failed to update vehicle");
+            toast.error(err?.message || "Failed to update vehicle");
           },
           onSettled: () => {
             setSubmitting(false);
@@ -77,18 +64,19 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose }) {
   if (!showModal) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex justify-center items-center p-4">
-      <div className="bg-white p-6 rounded-md shadow-md max-w-md w-full overflow-auto max-h-[90vh]">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex justify-center items-center">
+      <div className="bg-white p-6 rounded-md shadow-md w-[450px] max-h-[90vh] overflow-auto">
         <h2 className="text-xl font-semibold mb-4">Update Vehicle</h2>
 
         {isLoading ? (
-          <p>Loading vehicle details...</p>
-        ) : isError ? (
-          <p className="text-red-500">Error loading vehicle: {error?.message || "Unknown error"}</p>
+          <p>Loading vehicle data...</p>
+        ) : error ? (
+          <p className="text-red-500">Failed to load vehicle data</p>
         ) : (
-          <form onSubmit={formik.handleSubmit} className="space-y-4" encType="multipart/form-data">
+          <form onSubmit={formik.handleSubmit} className="space-y-4">
+            {/* Vehicle Name */}
             <div>
-              <label className="block mb-1 font-medium">Vehicle Name</label>
+              <label className="block mb-1">Vehicle Name</label>
               <input
                 name="vehicleName"
                 type="text"
@@ -102,8 +90,9 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose }) {
               )}
             </div>
 
+            {/* Vehicle Type */}
             <div>
-              <label className="block mb-1 font-medium">Vehicle Type</label>
+              <label className="block mb-1">Vehicle Type</label>
               <input
                 name="vehicleType"
                 type="text"
@@ -117,8 +106,9 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose }) {
               )}
             </div>
 
+            {/* Fuel Capacity */}
             <div>
-              <label className="block mb-1 font-medium">Fuel Capacity (Litres)</label>
+              <label className="block mb-1">Fuel Capacity (Litres)</label>
               <input
                 name="fuelCapacityLitres"
                 type="number"
@@ -132,8 +122,9 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose }) {
               )}
             </div>
 
+            {/* Load Capacity */}
             <div>
-              <label className="block mb-1 font-medium">Load Capacity (Kg)</label>
+              <label className="block mb-1">Load Capacity (Kg)</label>
               <input
                 name="loadCapacityKg"
                 type="number"
@@ -147,11 +138,12 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose }) {
               )}
             </div>
 
+            {/* Passenger Capacity */}
             <div>
-              <label className="block mb-1 font-medium">Passenger Capacity</label>
+              <label className="block mb-1">Passenger Capacity</label>
               <input
                 name="passengerCapacity"
-                type="number"
+                type="text"
                 className="w-full border p-2 rounded"
                 value={formik.values.passengerCapacity}
                 onChange={formik.handleChange}
@@ -162,8 +154,9 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose }) {
               )}
             </div>
 
+            {/* Price per Trip */}
             <div>
-              <label className="block mb-1 font-medium">Price per Trip</label>
+              <label className="block mb-1">Price per Trip</label>
               <input
                 name="pricePerTrip"
                 type="number"
@@ -177,34 +170,35 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose }) {
               )}
             </div>
 
+            {/* Image Upload */}
             <div>
-              <label className="block mb-1 font-medium">Vehicle Image (optional)</label>
+              <label className="block mb-1">Upload New Image (optional)</label>
               <input
-                name="filepath"
+                name="imageFile"
                 type="file"
                 accept="image/*"
-                className="w-full"
                 onChange={(event) => {
-                  formik.setFieldValue("filepath", event.currentTarget.files[0]);
+                  formik.setFieldValue("imageFile", event.currentTarget.files[0]);
                 }}
               />
             </div>
 
+            {/* Buttons */}
             <div className="flex justify-end gap-2">
               <button
                 type="button"
                 onClick={onClose}
                 className="bg-gray-300 px-4 py-2 rounded"
-                disabled={updateMutation.isLoading}
+                disabled={updateVehicle.isLoading}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                disabled={formik.isSubmitting || updateMutation.isLoading}
+                disabled={formik.isSubmitting || updateVehicle.isLoading}
                 className="bg-blue-600 text-white px-4 py-2 rounded"
               >
-                {formik.isSubmitting || updateMutation.isLoading ? "Updating..." : "Update"}
+                {updateVehicle.isLoading ? "Updating..." : "Update"}
               </button>
             </div>
           </form>

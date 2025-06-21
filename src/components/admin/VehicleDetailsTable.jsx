@@ -6,7 +6,7 @@ import {
 } from "../../hooks/admin/useAdminVehicle";
 import DeleteModal from "../../components/auth/DeleteModal";
 import CreateVehicleModal from "../../components/auth/CreateVehicleModal";
-import UpdateVehicleModal from "../../components/auth/UpdateVehicleModal"; // ✅ import
+import UpdateVehicleModal from "../../components/auth/UpdateVehicleModal";
 
 export default function VehicleDetailsTable() {
   const { vehicles, isLoading, isError, error } = useAdminVehicles();
@@ -14,7 +14,7 @@ export default function VehicleDetailsTable() {
 
   const [deleteId, setDeleteId] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [updateId, setUpdateId] = useState(null); // ✅ new state for update modal
+  const [updateId, setUpdateId] = useState(null);
 
   const handleDelete = () => {
     deleteMutation.mutate(deleteId, {

@@ -38,21 +38,21 @@ export const useCreateVehicle = () => {
   });
 };
 
-// export const useGetOneVehicle = (id) => {
-//   const query = useQuery({
-//     queryKey: ["admin_vehicle_details", id],
-//     queryFn: () => getOneVehicleService(id),
-//     enabled: !!id,
-//     retry: false,
-//   });
+export const useGetOneVehicle = (id) => {
+  const query = useQuery({
+    queryKey: ["admin_vehicle_details", id],
+    queryFn: () => getOneVehicleService(id),
+    enabled: !!id,
+    retry: false,
+  });
 
-//   const vehicle = query.data?.data || {};
+  const vehicle = query.data?.data || {};
 
-//   return {
-//     ...query,
-//     vehicle,
-//   };
-// };
+  return {
+    ...query,
+    vehicle,
+  };
+};
 
 export const useUpdateVehicle = () => {
   const queryClient = useQueryClient();

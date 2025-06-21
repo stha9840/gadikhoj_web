@@ -78,18 +78,17 @@ export const useDeleteOneUser = () =>{
     }
   )
 }
-const fetchUserCount = async () => {
-  const res = await axios.get("/admin/user/count");
-  return res.data; // assuming { success: true, total: <number> }
-};
-
-export const useUserCount = () => {
-  return useQuery({
-    queryKey: ["user_count"],
-    queryFn: fetchUserCount,
-    staleTime: 5 * 60 * 1000,
-  });
-};
+// const fetchUserCount = async () => {
+//   const res = await axios.get("/api/admin/user/count");
+//   return res.data; // { success: true, total: number }
+// };
+// export const useUserCount = () => {
+//   return useQuery({
+//     queryKey: ["user_count"],
+//     queryFn: fetchUserCount,
+//     staleTime: 5 * 60 * 1000,
+//   });
+// };
 
 
 
