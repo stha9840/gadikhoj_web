@@ -19,8 +19,16 @@ const Dashboard = () => {
         <NotificationsCard />
       </div>
 
-      <RevenueSummary />
-      <UserVehicleStatsChart />
+      {/* Wrap RevenueSummary and UserVehicleStatsChart side by side */}
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex-1">
+          <RevenueSummary />
+        </div>
+        <div className="flex-1">
+          <UserVehicleStatsChart />
+        </div>
+      </div>
+
       <RecentActivity />
     </div>
   );

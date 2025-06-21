@@ -29,8 +29,11 @@ const TotalUsers = () => {
 
   return (
     <div className="relative bg-gradient-to-br from-white to-indigo-50 px-3 py-2 rounded-md shadow-sm flex items-center gap-3 h-16 w-full hover:shadow-md transition-all duration-200 group">
-      <div className="flex items-center justify-center w-7 h-7 rounded-full bg-indigo-600 text-white text-sm shadow ring-2 ring-indigo-200 group-hover:scale-105 transition-transform duration-200">
-        <FaUser />
+      <div
+        className="flex items-center justify-center w-7 h-7 rounded-full shadow ring-2 ring-indigo-200 group-hover:scale-105 transition-transform duration-200"
+        style={{ backgroundColor: "#DBEAFE" }}
+      >
+        <FaUser style={{ color: "#2563EB" }} />
       </div>
       <div className="leading-tight">
         <div className="text-[10px] uppercase tracking-wider text-gray-600 font-medium">
