@@ -5,14 +5,16 @@ import {
   useDeleteVehicle,
 } from "../../hooks/admin/useAdminVehicle";
 import DeleteModal from "../../components/auth/DeleteModal";
-import CreateVehicleModal from "../../components/auth/CreateVehicleModal"; // <-- import modal
+import CreateVehicleModal from "../../components/auth/CreateVehicleModal";
+import UpdateVehicleModal from "../../components/auth/UpdateVehicleModal"; // ✅ import
 
 export default function VehicleDetailsTable() {
   const { vehicles, isLoading, isError, error } = useAdminVehicles();
   const deleteMutation = useDeleteVehicle();
 
   const [deleteId, setDeleteId] = useState(null);
-  const [showCreateModal, setShowCreateModal] = useState(false); // <-- modal state
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [updateId, setUpdateId] = useState(null); // ✅ new state for update modal
 
   const handleDelete = () => {
     deleteMutation.mutate(deleteId, {
@@ -32,20 +34,27 @@ export default function VehicleDetailsTable() {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold text-gray-800">Vehicle List</h2>
         <button
-          onClick={() => setShowCreateModal(true)} // <-- open modal
+          onClick={() => setShowCreateModal(true)}
           className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow transition"
         >
           <FaPlus /> Add Vehicle
         </button>
       </div>
 
-      {/* Create Vehicle Modal */}
+      {/* Create Modal */}
       <CreateVehicleModal
         showModal={showCreateModal}
-        onClose={() => setShowCreateModal(false)} // <-- close modal
+        onClose={() => setShowCreateModal(false)}
       />
 
-      {/* Delete Confirmation Modal */}
+      {/* Update Modal */}
+      <UpdateVehicleModal
+        showModal={!!updateId}
+        vehicleId={updateId}
+        onClose={() => setUpdateId(null)}
+      />
+
+      {/* Delete Modal */}
       <DeleteModal
         isOpen={!!deleteId}
         onClose={() => setDeleteId(null)}
@@ -104,7 +113,10 @@ export default function VehicleDetailsTable() {
                         ? "Deleting..."
                         : "Delete"}
                     </button>
-                    <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded flex items-center gap-1 text-xs">
+                    <button
+                      onClick={() => setUpdateId(vehicle._id)}
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded flex items-center gap-1 text-xs"
+                    >
                       <FaEdit /> Update
                     </button>
                   </div>

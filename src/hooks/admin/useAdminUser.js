@@ -1,5 +1,7 @@
 import { keepPreviousData,useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import axios from 'axios'; 
+
 
 //useQuery -> Get request state
 import { useState } from "react";
@@ -76,6 +78,18 @@ export const useDeleteOneUser = () =>{
     }
   )
 }
+const fetchUserCount = async () => {
+  const res = await axios.get("/admin/user/count");
+  return res.data; // assuming { success: true, total: <number> }
+};
+
+export const useUserCount = () => {
+  return useQuery({
+    queryKey: ["user_count"],
+    queryFn: fetchUserCount,
+    staleTime: 5 * 60 * 1000,
+  });
+};
 
 
 

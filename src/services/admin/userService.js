@@ -53,3 +53,7 @@ export const getOneUserService = async (id) => {
         throw err.response?.data || { message: 'Failed to load'}
     }
 } 
+export const getUserCountService = async () => {
+  const response = await getUserCountApi();
+  return response.data;  // { success: true, total: 123 }
+};
