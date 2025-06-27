@@ -12,7 +12,6 @@ import LocationDate from '../components/LocationDate';
 export default function HomePage() {
   return (
     <div>
-      <Navbar />
       <LandingSection />
       <LocationDate/>
       <BrandsSection />

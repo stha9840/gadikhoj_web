@@ -5,10 +5,12 @@ import Login from "../pages/LoginPage";
 import Register from "../pages/RegisterPage";
 import Dashboard from "../pages/admin/Dashboard";
 import HomePage from "../pages/HomePage";
+import MyBookingPage from "../pages/MyBookingPage";
 import UserTable from "../components/admin/UserTable";
 import VehicleDetailsTable from "../components/admin/VehicleDetailsTable";
 import CreateVehicleForm from "../pages/admin/CreateVehicleForm";
 import MainLayout from "../layouts/admin/MainLayout";
+import UserLayout from "../layouts/UserLayout";
 import BookingTable from "../components/BookingTable";
 
 import AdminRoute from "./AdminRoute";
@@ -31,10 +33,20 @@ const AppRouter = () => {
         </Route>
       </Route>
 
-      {/* User routes */}
+      {/* User routes
       <Route element={<UserRoute />}>
-        <Route path="/home" element={<HomePage />} />
+        <Route element={<UserLayout />}>
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/mybooking" element={<MyBookingPage />} />
+        </Route>
+      </Route> */}
+      <Route element={<UserRoute />}>
+        <Route element={<UserLayout />}>
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/mybooking" element={<MyBookingPage />} />
+        </Route>
       </Route>
+
 
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
