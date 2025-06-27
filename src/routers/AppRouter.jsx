@@ -9,6 +9,7 @@ import UserTable from "../components/admin/UserTable"; // adjust path if needed
 import VehicleDetailsTable from "../components/admin/VehicleDetailsTable";
 import CreateVehicleForm from "../pages/admin/CreateVehicleForm";
 import MainLayout from "../layouts/admin/MainLayout";
+import BookingTable from "../components/BookingTable";
 
 
 
@@ -25,6 +26,7 @@ const AppRouter = () => {
         <Route path="vehicles" element={<VehicleDetailsTable />} />
         <Route path="vehicles" element={<VehicleDetailsTable />} />
         <Route path="vehicles/create" element={<CreateVehicleForm />} />
+        <Route path="bookings" element={<BookingTable />} />
       </Route>
 
       <Route path="/login" element={<Login />} />

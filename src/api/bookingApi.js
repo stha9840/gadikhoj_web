@@ -1,4 +1,4 @@
-import axios from "../api";
+import axios from "./Api";
 
 //  Get all bookings (admin)
 export const getAllBookingApi = (params) => axios.get("/bookings", { params });
