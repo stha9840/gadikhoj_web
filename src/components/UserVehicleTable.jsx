@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FaWeightHanging,
   FaGasPump,
@@ -6,14 +6,11 @@ import {
   FaMoneyBillWave,
 } from "react-icons/fa";
 import { useAdminVehicles } from "../../src/hooks/admin/useAdminVehicle";
+import BookingModal from "../../src/components/auth/BookingModal"; // Adjust the path if needed
 
 export default function UserVehicleTable() {
   const { vehicles, isLoading, isError, error } = useAdminVehicles();
-
-  const handleBookNow = (vehicleId) => {
-    // Replace with your booking logic/modal
-    alert(`Booking vehicle ID: ${vehicleId}`);
-  };
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
 
   return (
     <div className="min-h-screen py-8 px-4">
@@ -24,6 +21,13 @@ export default function UserVehicleTable() {
             Available Vehicles
           </span>
         </div>
+
+        {/* Booking Modal */}
+        <BookingModal
+          showModal={!!selectedVehicle}
+          onClose={() => setSelectedVehicle(null)}
+          vehicle={selectedVehicle}
+        />
 
         {/* Content */}
         {isLoading ? (
@@ -86,7 +90,7 @@ export default function UserVehicleTable() {
 
                 <div className="p-3 pt-0">
                   <button
-                    onClick={() => handleBookNow(vehicle._id)}
+                    onClick={() => setSelectedVehicle(vehicle)}
                     className="w-full bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 text-white font-medium py-2 rounded-lg transition"
                   >
                     Book Now
