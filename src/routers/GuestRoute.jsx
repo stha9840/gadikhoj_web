@@ -1,19 +1,22 @@
-// GuestRoute.jsx
-import { useContext } from "react";
-import { Navigate } from "react-router-dom";
-import { AuthContext } from "../../src/auth/AuthProvider";
+// import { Navigate, Outlet } from "react-router-dom";
+// import { AuthContext } from "../auth/AuthProvider";
+// import { useContext } from "react";
 
-const GuestRoute = ({ children }) => {
-  const { isAuthenticated, user, Loading } = useContext(AuthContext);
+// import React from 'react'
 
-  if (Loading) return <div>Loading...</div>;
+// export default function GuestRoute() {
+//     const { user, loading } = useContext(AuthContext)
 
-  if (isAuthenticated) {
-    // Redirect logged-in users
-    return <Navigate to={user.role === "admin" ? "/admin" : "/user"} replace />;
-  }
+//     if (loading) return <>Loading</>
 
-  return children;
-};
+//     if(user?.role == "normal") return <Navigate to="/home" />
 
-export default GuestRoute;
+//     // if user is logged in redirect to "/"
+//     if(user) return <Navigate to="/login"/>
+
+//     // if user is normal redirect to /user/cart
+
+
+//     // return as it is
+//     return <Outlet/>
+// // 

@@ -1,37 +1,47 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
- import { useForm } from "react-hook-form";
+
 import Login from "../pages/LoginPage";
-import Register from "../pages/RegisterPage";// optional
+import Register from "../pages/RegisterPage";
 import Dashboard from "../pages/admin/Dashboard";
 import HomePage from "../pages/HomePage";
-import UserTable from "../components/admin/UserTable"; // adjust path if needed
+import UserTable from "../components/admin/UserTable";
 import VehicleDetailsTable from "../components/admin/VehicleDetailsTable";
 import CreateVehicleForm from "../pages/admin/CreateVehicleForm";
 import MainLayout from "../layouts/admin/MainLayout";
 import BookingTable from "../components/BookingTable";
 
-
+import AdminRoute from "./AdminRoute";
+import UserRoute from "./UserRoute";
 
 const AppRouter = () => {
   return (
-    
     <Routes>
       <Route path="/" element={<Navigate to="/login" />} />
 
-      <Route path="/admin/*" element={< MainLayout/>} >
-        <Route index element={<Dashboard/>}/>
-        <Route path="dashboard" element={<Dashboard/>}/>
-        <Route path="users" element={<UserTable />} />
-        <Route path="vehicles" element={<VehicleDetailsTable />} />
-        <Route path="vehicles" element={<VehicleDetailsTable />} />
-        <Route path="vehicles/create" element={<CreateVehicleForm />} />
-        <Route path="bookings" element={<BookingTable />} />
+      {/* Admin routes */}
+      <Route path="/admin/*" element={<AdminRoute />}>
+        <Route element={<MainLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="users" element={<UserTable />} />
+          <Route path="vehicles" element={<VehicleDetailsTable />} />
+          <Route path="vehicles/create" element={<CreateVehicleForm />} />
+          <Route path="bookings" element={<BookingTable />} />
+        </Route>
       </Route>
 
+      {/* User routes */}
+      <Route element={<UserRoute />}>
+        <Route path="/home" element={<HomePage />} />
+      </Route>
+
+      {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path = "/home" element = {<HomePage/>}></Route>
+
+      {/* Catch-all */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 };

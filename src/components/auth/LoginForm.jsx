@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useLoginUser } from "../../hooks/useLoginUser";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEnvelope, FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import Logo from "../../assets/logo.png";
+import { AuthContext } from "../../auth/AuthProvider";
+import { toast } from "react-toastify";  // <-- Import toast here
+import "react-toastify/dist/ReactToastify.css"; // optional, only if not imported globally
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { mutate, data, error, isPending } = useLoginUser();
+  const { mutate, data, error, isPending, isSuccess } = useLoginUser();
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -29,18 +34,34 @@ const LoginForm = () => {
     },
   });
 
+  useEffect(() => {
+    if (isSuccess && data?.data && data?.token) {
+      login(data.data, data.token);
+
+      toast.success(data.message || "Login successful");
+
+      if (data.data.role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (data.data.role === "normal") {
+        navigate("/home");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [isSuccess, data, login, navigate]);
+
   return (
     <div className="w-full max-w-sm">
       <img src={Logo} alt="Gadi Khoj Logo" className="w-40 mb-6" />
       <h2 className="text-3xl font-bold mb-8">Login to get started</h2>
 
       <form onSubmit={formik.handleSubmit}>
-        {/* -------- Email Field -------- */}
+        {/* Email Field */}
         <div className="mb-6">
           <label className="block text-sm font-medium mb-1">
             Email <span className="text-red-500">*</span>
           </label>
-          <div className="relative pl">
+          <div className="relative">
             <input
               type="email"
               name="email"
@@ -59,7 +80,7 @@ const LoginForm = () => {
           )}
         </div>
 
-        {/* -------- Password Field -------- */}
+        {/* Password Field */}
         <div className="mb-6">
           <label className="block text-sm font-medium mb-1">
             Password <span className="text-red-500">*</span>
@@ -93,7 +114,7 @@ const LoginForm = () => {
           )}
         </div>
 
-        {/* -------- Login Button -------- */}
+        {/* Login Button */}
         <button
           type="submit"
           disabled={isPending}
@@ -103,7 +124,6 @@ const LoginForm = () => {
         </button>
       </form>
 
-      {/* -------- Sign Up Link -------- */}
       <p className="text-sm text-gray-700 mb-5">
         Don’t have an account?{" "}
         <Link
@@ -114,15 +134,12 @@ const LoginForm = () => {
         </Link>
       </p>
 
-      {/* Divider */}
       <div className="text-center text-sm text-gray-400 mb-6">or</div>
 
-      {/* -------- Google Sign-In -------- */}
       <button className="w-full border border-gray-300 py-3 flex items-center justify-center gap-3 rounded-lg hover:bg-gray-100 transition duration-300">
         <FcGoogle className="text-2xl" /> Sign up with Google
       </button>
 
-      {/* -------- Optional: Backend error/success messages -------- */}
       {error && <p className="text-center text-sm text-red-600 mt-4">{error.message}</p>}
       {data && <p className="text-center text-sm text-green-600 mt-4">{data.message}</p>}
     </div>

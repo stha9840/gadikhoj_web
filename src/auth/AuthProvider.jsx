@@ -4,32 +4,27 @@ export const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [Loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true); // lowercase loading
 
   const login = (userData, token) => {
-    setLoading(true)
-    localStorage.setItem("user", JSON.stringify(userData)); // lowercase 'user' for consistency
+    localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("token", token);
     setUser(userData);
-    setLoading(false)
   };
 
   const logout = () => {
-    setLoading(true)
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     setUser(null);
-    setLoading(false)
   };
 
   useEffect(() => {
-    setLoading(true)
     const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user"); // fixed key
+    const storedUser = localStorage.getItem("user");
 
     if (token && storedUser) {
       try {
-        setUser(JSON.parse(storedUser)); // fixed typo: JSON.parse
+        setUser(JSON.parse(storedUser));
       } catch (error) {
         console.error("Failed to parse user from localStorage", error);
         logout();
@@ -37,17 +32,16 @@ const AuthContextProvider = ({ children }) => {
     } else {
       logout();
     }
-    setLoading(false)
+    setLoading(false);
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user,Loading, login, logout, isAuthenticated: user !== null }}
+      value={{ user, loading, login, logout, isAuthenticated: !!user }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Export the provider component itself — NOT called here!
 export default AuthContextProvider;
