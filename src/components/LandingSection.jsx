@@ -1,10 +1,10 @@
 import React from "react";
 import { Typewriter } from "react-simple-typewriter";
-import blueCar from "../assets/bluecar.png";
+import blueCar from "../assets/landing_assests/bluecar.png";
 
 export default function LandingSection() {
   return (
-    <section className="w-screen overflow-hidden bg-[#f5f7fa] px- md:px-20 lg:px-2 pb-32">
+    <section className="w-screen overflow-hidden bg-[#f5f7fa] px- md:px-20 lg:px-2 pb-32 -mt-4">
       <div className="max-w-7xl mx-auto px-4 lg:px-12 relative">
         {/* Top Row */}
         <div className="flex flex-col lg:flex-row justify-between items-center py-6">

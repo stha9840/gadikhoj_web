@@ -1,10 +1,11 @@
 import React from 'react'
-import VehicleDetailsTable from './admin/VehicleDetailsTable'
+// import VehicleDetailsTable from './admin/VehicleDetailsTable'
+import UserVehicleTable from './UserVehicleTable'
 
 export default function AvailableVehicles() {
   return (
     <div>
-      <VehicleDetailsTable/>
+      <UserVehicleTable/>
     </div>
   )
 }

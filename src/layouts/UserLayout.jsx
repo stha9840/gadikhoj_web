@@ -7,9 +7,10 @@ export default function UserLayout() {
   return (
     <>
       <Navbar />
-      <div className="pt-24 px-6 max-w-7xl mx-auto">
+      <div className="pt-20"> {/* Just add top padding for navbar height */}
         <Outlet />
       </div>
     </>
   );
 }
+
