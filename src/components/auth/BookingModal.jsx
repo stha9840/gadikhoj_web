@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axios from "../../api/Api";
 
 const validationSchema = Yup.object({
   startDate: Yup.date().required("Start date is required"),
@@ -13,7 +13,7 @@ const validationSchema = Yup.object({
 });
 
 const createBookingService = async (data) => {
-  const res = await axios.post("/api/bookings", data);
+  const res = await axios.post("bookings", data);
   return res.data;
 };
 
