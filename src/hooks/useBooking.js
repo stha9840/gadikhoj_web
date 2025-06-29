@@ -4,6 +4,9 @@ import {
   getMyBookingsService,
   createBookingService,
   cancelBookingService,
+  updateBookingService,
+  deleteBookingService,
+  getOneBookingService
 } from "../services/bookingService";
 import { toast } from "react-toastify";
 
@@ -72,5 +75,48 @@ export const useCancelBooking = () => {
     onError: (err) => {
       toast.error(err.message || "Cancellation failed");
     },
+  });
+};
+
+// 🔹 Update a booking
+export const useUpdateBooking = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["update_booking"],
+    mutationFn: ({ id, updatedData }) => updateBookingService(id, updatedData),
+    onSuccess: () => {
+      toast.success("Booking updated successfully");
+      queryClient.invalidateQueries(["user_bookings", "admin_bookings"]);
+    },
+    onError: (err) => {
+      toast.error(err.message || "Update failed");
+    },
+  });
+};
+
+// 🔹 Delete a booking
+export const useDeleteBooking = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete_booking"],
+    mutationFn: (id) => deleteBookingService(id),
+    onSuccess: () => {
+      toast.success("Booking deleted");
+      queryClient.invalidateQueries(["user_bookings", "admin_bookings"]);
+    },
+    onError: (err) => {
+      toast.error(err.message || "Delete failed");
+    },
+  });
+};
+//  Fetch a single booking by ID
+export const useGetOneBooking = (bookingId) => {
+  return useQuery({
+    queryKey: ["booking", bookingId],
+    queryFn: () => getOneBookingService(bookingId),
+    enabled: !!bookingId, 
+    staleTime: 1000 * 60 * 5, 
   });
 };
