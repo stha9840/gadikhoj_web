@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "../api/Api";
 import CancelBookingModal from "../components/auth/CancelBookingModal";
-import UndoCancelModal from "../components/auth/UndoCancelModal";  // import it
+import UndoCancelModal from "../components/auth/UndoCancelModal";
 import UpdateBookingModal from "../components/auth/UpdateBookingModal";
+import BookingDeleteModal from "../components/auth/BookingDeleteModal"; 
+import { FaTimesCircle, FaUndoAlt, FaEdit, FaTrashAlt } from "react-icons/fa";
 
 const fetchUserBookings = async () => {
   const { data } = await axios.get("/bookings/my");
@@ -13,8 +15,9 @@ const fetchUserBookings = async () => {
 export default function MyBookingPage() {
   const queryClient = useQueryClient();
   const [cancelModalBookingId, setCancelModalBookingId] = useState(null);
-  const [undoModalBookingId, setUndoModalBookingId] = useState(null); // New state for Undo modal
+  const [undoModalBookingId, setUndoModalBookingId] = useState(null);
   const [editingBooking, setEditingBooking] = useState(null);
+  const [deleteModalBookingId, setDeleteModalBookingId] = useState(null);
 
   const {
     data: bookings,
@@ -31,130 +34,163 @@ export default function MyBookingPage() {
 
   if (isLoading)
     return (
-      <p className="text-center mt-6 text-gray-500">Loading your bookings...</p>
+      <p className="text-center mt-6 text-gray-500 text-lg font-medium">
+        Loading your bookings...
+      </p>
     );
   if (isError)
     return (
-      <p className="text-center mt-6 text-red-500">Error: {error.message}</p>
+      <p className="text-center mt-6 text-red-600 font-semibold">
+        Error: {error.message}
+      </p>
     );
   if (!bookings.length)
     return (
-      <p className="text-center mt-6 text-gray-500 text-lg">
+      <p className="text-center mt-6 text-gray-600 text-lg">
         You have no bookings yet.
       </p>
     );
 
   return (
-    <div className="min-h-screen py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6 text-gray-800">My Bookings</h1>
+    <div className="min-h-screen py-10 px-6">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-3xl font-extrabold mb-8 text-gray-900 tracking-tight">
+          My Bookings
+        </h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="flex flex-col gap-6">
           {bookings.map((booking) => (
             <div
               key={booking._id}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all border border-gray-200 overflow-hidden flex flex-col hover:scale-[1.02] duration-200 max-w-xs"
+              className="bg-white rounded-2xl shadow-sm hover:shadow-md transition duration-300 border border-gray-200 overflow-hidden w-full h-[240px] flex"
             >
-              <img
-                src={
-                  booking.vehicleId?.filepath
-                    ? `/${booking.vehicleId.filepath}`
-                    : "/placeholder.jpg"
-                }
-                alt={booking.vehicleId?.vehicleName || "Vehicle"}
-                className="w-full h-32 object-cover"
-              />
-
-              <div className="p-4 flex-grow">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="font-bold text-md text-gray-800 truncate">
-                    {booking.vehicleId?.vehicleName || "Unnamed Vehicle"}
-                  </h3>
-                  <span
-                    className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                      booking.status === "cancelled"
-                        ? "bg-red-100 text-red-600"
-                        : "bg-indigo-100 text-indigo-600"
-                    }`}
-                  >
-                    {booking.status || "confirmed"}
-                  </span>
-                </div>
-
-                <div className="text-sm text-gray-700 space-y-1 mb-4">
-                  <p>
-                    <strong>From:</strong>{" "}
-                    {new Date(booking.startDate).toLocaleDateString()}
-                  </p>
-                  <p>
-                    <strong>To:</strong>{" "}
-                    {new Date(booking.endDate).toLocaleDateString()}
-                  </p>
-                  <p>
-                    <strong>Pickup:</strong> {booking.pickupLocation || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Drop:</strong> {booking.dropLocation || "N/A"}
-                  </p>
-                  <p className="text-green-600 font-semibold">
-                    Total: NPR {booking.totalPrice}
-                  </p>
+              {/* Left Image */}
+              <div className="w-[35%] h-full relative">
+                <img
+                  src={
+                    booking.vehicleId?.filepath
+                      ? `/${booking.vehicleId.filepath}`
+                      : "/placeholder.jpg"
+                  }
+                  alt={booking.vehicleId?.vehicleName || "Vehicle"}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-2 left-2 text-[10px] bg-white bg-opacity-80 px-2 py-1 rounded-full font-semibold">
+                  1/1
                 </div>
               </div>
 
-              <div className="p-4 pt-0 space-y-2">
-                {booking.status === "cancelled" ? (
-                  <button
-                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:opacity-90 transition font-medium"
-                    onClick={() => setUndoModalBookingId(booking._id)} // open Undo modal
+              {/* Right Content */}
+              <div className="w-[65%] p-5 flex flex-col justify-between">
+                {/* Top Row: Title and Status */}
+                <div className="flex justify-between items-center mb-1">
+                  <h3 className="text-[16px] font-bold text-gray-800 leading-tight line-clamp-1">
+                    {booking.vehicleId?.vehicleName || "Unnamed Vehicle"}
+                  </h3>
+                  <span
+                    className={`text-[12px] font-medium px-2 py-[2px] rounded-full ${
+                      booking.status === "cancelled"
+                        ? "bg-red-100 text-red-500"
+                        : "bg-green-100 text-green-600"
+                    }`}
                   >
-                    Undo Cancel
-                  </button>
-                ) : (
-                  <button
-                    className="w-full bg-gradient-to-r from-red-500 to-pink-500 text-white py-2 rounded-lg hover:opacity-90 transition font-medium disabled:opacity-50"
-                    onClick={() => setCancelModalBookingId(booking._id)}
-                  >
-                    Cancel Booking
-                  </button>
-                )}
+                    {booking.status}
+                  </span>
+                </div>
 
-                <button
-                  className="w-full bg-gradient-to-r from-indigo-500 to-blue-600 text-white py-2 rounded-lg hover:opacity-90 transition font-medium"
-                  onClick={() => openEditModal(booking)}
-                  disabled={booking.status === "cancelled"}
-                >
-                  Edit Booking
-                </button>
+                {/* Dates */}
+                <p className="text-[13px] text-gray-600 mb-1">
+                  📅 {new Date(booking.startDate).toLocaleDateString()} →{" "}
+                  {new Date(booking.endDate).toLocaleDateString()}
+                </p>
+
+                {/* Locations */}
+                <div className="text-[13px] text-gray-700 space-y-1 mb-3">
+                  <p>
+                    📍 <strong>Pickup:</strong> {booking.pickupLocation || "N/A"}
+                  </p>
+                  <p>
+                    🎯 <strong>Drop:</strong> {booking.dropLocation || "N/A"}
+                  </p>
+                </div>
+
+                {/* Price and Actions */}
+                <div className="flex items-center justify-between">
+                  <p className="text-blue-700 font-bold text-[15px]">
+                    Price: NPR {booking.totalPrice}
+                  </p>
+                  <div className="flex gap-3 min-w-[240px] justify-end">
+                    {booking.status === "cancelled" ? (
+                      <button
+                        onClick={() => setUndoModalBookingId(booking._id)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white text-[12px] px-3 py-1 rounded-md flex items-center gap-1"
+                      >
+                        <FaUndoAlt size={12} />
+                        Undo
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setCancelModalBookingId(booking._id)}
+                        className="bg-red-500 hover:bg-red-600 text-white text-[12px] px-3 py-1 rounded-md flex items-center gap-1"
+                      >
+                        <FaTimesCircle size={12} />
+                        Cancel
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => openEditModal(booking)}
+                      disabled={booking.status === "cancelled"}
+                      className={`text-[12px] px-3 py-1 rounded-md flex items-center gap-1 ${
+                        booking.status === "cancelled"
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                      }`}
+                    >
+                      <FaEdit size={12} />
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() => setDeleteModalBookingId(booking._id)}
+                      className="bg-gray-200 hover:bg-gray-300 text-red-600 text-[12px] px-3 py-1 rounded-md flex items-center gap-1 whitespace-nowrap"
+                    >
+                      <FaTrashAlt size={14} />
+                      Delete
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Cancel booking modal */}
+      {/* Modals */}
       {cancelModalBookingId && (
         <CancelBookingModal
           bookingId={cancelModalBookingId}
           onClose={() => setCancelModalBookingId(null)}
         />
       )}
-
-      {/* Undo cancel booking modal */}
       {undoModalBookingId && (
         <UndoCancelModal
           bookingId={undoModalBookingId}
           onClose={() => setUndoModalBookingId(null)}
         />
       )}
-
-      {/* Edit booking modal */}
       <UpdateBookingModal
         bookingId={editingBooking?._id}
         showModal={!!editingBooking}
         onClose={closeEditModal}
         onSuccess={() => queryClient.invalidateQueries(["user_bookings"])}
       />
+      {deleteModalBookingId && (
+        <BookingDeleteModal
+          bookingId={deleteModalBookingId}
+          onClose={() => setDeleteModalBookingId(null)}
+        />
+      )}
     </div>
   );
 }
