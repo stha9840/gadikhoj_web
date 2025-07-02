@@ -1,12 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaEllipsisV } from "react-icons/fa";
-import { useAdminBookings, useCancelBooking } from "../hooks/useBooking";
+import { useAdminBookings } from "../hooks/useBooking";
 import BookingDetailsModal from "./auth/Booking/BookingDetailsModal";
 import BookingDeleteModal from "./auth/Booking/BookingDeleteModal";
+import UndoCancelModal from "./auth/Booking/UndoCancelModal";
+import CancelBookingModal from "./auth/Booking/CancelBookingModal"; // import your cancel modal
 
 const BACKEND_URL = "http://localhost:5000";
 
-const ActionsDropdown = ({ onView, onCancel, onEdit, onDelete, disabledCancel }) => {
+const ActionsDropdown = ({
+  onView,
+  onCancel,
+  onEdit,
+  onDelete,
+  onUndo,
+  disabledCancel,
+  showUndo,
+}) => {
   const [open, setOpen] = useState(false);
   const ref = useRef();
 
@@ -46,20 +56,36 @@ const ActionsDropdown = ({ onView, onCancel, onEdit, onDelete, disabledCancel })
             >
               View Details
             </button>
-            <button
-              onClick={() => {
-                onCancel();
-                setOpen(false);
-              }}
-              disabled={disabledCancel}
-              className={`block w-full text-left px-4 py-2 ${disabledCancel
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "text-red-600 hover:bg-red-100 hover:text-red-800"
+
+            {showUndo ? (
+              <button
+                onClick={() => {
+                  onUndo();
+                  setOpen(false);
+                }}
+                className="block w-full text-left px-4 py-2 text-blue-600 hover:bg-blue-100 hover:text-blue-800"
+                type="button"
+              >
+                Undo Cancel
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  onCancel();
+                  setOpen(false);
+                }}
+                disabled={disabledCancel}
+                className={`block w-full text-left px-4 py-2 ${
+                  disabledCancel
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-red-600 hover:bg-red-100 hover:text-red-800"
                 }`}
-              type="button"
-            >
-              Cancel Booking
-            </button>
+                type="button"
+              >
+                Cancel Booking
+              </button>
+            )}
+
             <button
               onClick={() => {
                 onEdit();
@@ -89,24 +115,33 @@ const ActionsDropdown = ({ onView, onCancel, onEdit, onDelete, disabledCancel })
 
 const BookingTable = () => {
   const { bookings, isLoading, isError, error } = useAdminBookings();
-  const cancelBookingMutation = useCancelBooking();
+
+  // Modal states
   const [selectedBooking, setSelectedBooking] = useState(null);
 
-  // New state for delete modal
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [bookingToDelete, setBookingToDelete] = useState(null);
 
-  const handleCancel = (id) => {
-    if (window.confirm("Are you sure you want to cancel this booking?")) {
-      cancelBookingMutation.mutate(id);
-    }
+  const [undoModalOpen, setUndoModalOpen] = useState(false);
+  const [bookingToUndo, setBookingToUndo] = useState(null);
+
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [bookingToCancel, setBookingToCancel] = useState(null);
+
+  const handleCancelClick = (booking) => {
+    setBookingToCancel(booking);
+    setCancelModalOpen(true);
+  };
+
+  const handleUndoCancel = (booking) => {
+    setBookingToUndo(booking);
+    setUndoModalOpen(true);
   };
 
   const handleEdit = (id) => {
     alert(`Edit booking ${id} clicked!`);
   };
 
-  // ✅ Show modal instead of confirm
   const handleDelete = (booking) => {
     setBookingToDelete(booking);
     setDeleteModalOpen(true);
@@ -146,13 +181,12 @@ const BookingTable = () => {
                 <div className="absolute top-0 right-0">
                   <ActionsDropdown
                     onView={() => setSelectedBooking(booking)}
-                    onCancel={() => handleCancel(booking._id)}
+                    onCancel={() => handleCancelClick(booking)}
                     onEdit={() => handleEdit(booking._id)}
                     onDelete={() => handleDelete(booking)}
-                    disabledCancel={
-                      cancelBookingMutation.isLoading ||
-                      booking.status === "cancelled"
-                    }
+                    onUndo={() => handleUndoCancel(booking)}
+                    disabledCancel={booking.status === "cancelled"}
+                    showUndo={booking.status === "cancelled"}
                   />
                 </div>
 
@@ -189,12 +223,13 @@ const BookingTable = () => {
                       <p>
                         <span className="font-medium">Status:</span>{" "}
                         <span
-                          className={`ml-1 font-semibold ${booking.status === "cancelled"
+                          className={`ml-1 font-semibold ${
+                            booking.status === "cancelled"
                               ? "text-red-600"
                               : booking.status === "completed"
-                                ? "text-green-600"
-                                : "text-blue-600"
-                            }`}
+                              ? "text-green-600"
+                              : "text-blue-600"
+                          }`}
                         >
                           {booking.status}
                         </span>
@@ -208,13 +243,35 @@ const BookingTable = () => {
         </div>
       )}
 
+      {/* Cancel Modal */}
+      {cancelModalOpen && bookingToCancel && (
+        <CancelBookingModal
+          bookingId={bookingToCancel._id}
+          onClose={() => {
+            setCancelModalOpen(false);
+            setBookingToCancel(null);
+          }}
+        />
+      )}
+
+      {/* Undo Cancel Modal */}
+      {undoModalOpen && bookingToUndo && (
+        <UndoCancelModal
+          bookingId={bookingToUndo._id}
+          onClose={() => {
+            setUndoModalOpen(false);
+            setBookingToUndo(null);
+          }}
+        />
+      )}
+
       {/* View Modal */}
       <BookingDetailsModal
         booking={selectedBooking}
         onClose={() => setSelectedBooking(null)}
       />
 
-      {/* ✅ Delete Modal */}
+      {/* Delete Modal */}
       {deleteModalOpen && bookingToDelete && (
         <BookingDeleteModal
           bookingId={bookingToDelete._id}

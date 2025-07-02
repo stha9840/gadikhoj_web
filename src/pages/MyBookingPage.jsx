@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "../api/Api";
-import CancelBookingModal from "../components/auth/CancelBookingModal";
+import CancelBookingModal from "../components/auth/Booking/CancelBookingModal";
 import UndoCancelModal from "../components/auth/Booking/UndoCancelModal";
 import UpdateBookingModal from "../components/auth/Booking/UpdateBookingModal";
 import BookingDeleteModal from "../components/auth/Booking/BookingDeleteModal";
