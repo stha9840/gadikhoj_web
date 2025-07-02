@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaEllipsisV } from "react-icons/fa";
 import { useAdminBookings, useCancelBooking } from "../hooks/useBooking";
 import BookingDetailsModal from "./auth/Booking/BookingDetailsModal";
-import BookingDeleteModal from "./auth/Booking/BookingDeleteModal"; 
+import BookingDeleteModal from "./auth/Booking/BookingDeleteModal";
 
 const BACKEND_URL = "http://localhost:5000";
 
@@ -52,11 +52,10 @@ const ActionsDropdown = ({ onView, onCancel, onEdit, onDelete, disabledCancel })
                 setOpen(false);
               }}
               disabled={disabledCancel}
-              className={`block w-full text-left px-4 py-2 ${
-                disabledCancel
+              className={`block w-full text-left px-4 py-2 ${disabledCancel
                   ? "text-gray-400 cursor-not-allowed"
                   : "text-red-600 hover:bg-red-100 hover:text-red-800"
-              }`}
+                }`}
               type="button"
             >
               Cancel Booking
@@ -93,7 +92,7 @@ const BookingTable = () => {
   const cancelBookingMutation = useCancelBooking();
   const [selectedBooking, setSelectedBooking] = useState(null);
 
- // New state for delete modal
+  // New state for delete modal
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [bookingToDelete, setBookingToDelete] = useState(null);
 
@@ -131,9 +130,9 @@ const BookingTable = () => {
               style={{ minHeight: "140px", maxWidth: "700px", margin: "auto" }}
             >
               {/* Vehicle image on left */}
-              {booking.vehicleId?.image ? (
+              {booking.vehicleId?.filepath ? (
                 <img
-                  src={`${BACKEND_URL}/uploads/${booking.vehicleId.image}`}
+                  src={`${BACKEND_URL}/uploads/${booking.vehicleId.filepath}`}
                   alt={booking.vehicleId.vehicleName || "Vehicle"}
                   className="w-28 h-28 rounded-lg object-cover mr-6 flex-shrink-0"
                 />
@@ -149,7 +148,7 @@ const BookingTable = () => {
                     onView={() => setSelectedBooking(booking)}
                     onCancel={() => handleCancel(booking._id)}
                     onEdit={() => handleEdit(booking._id)}
-                    onDelete={() => handleDelete(booking)} 
+                    onDelete={() => handleDelete(booking)}
                     disabledCancel={
                       cancelBookingMutation.isLoading ||
                       booking.status === "cancelled"
@@ -190,13 +189,12 @@ const BookingTable = () => {
                       <p>
                         <span className="font-medium">Status:</span>{" "}
                         <span
-                          className={`ml-1 font-semibold ${
-                            booking.status === "cancelled"
+                          className={`ml-1 font-semibold ${booking.status === "cancelled"
                               ? "text-red-600"
                               : booking.status === "completed"
-                              ? "text-green-600"
-                              : "text-blue-600"
-                          }`}
+                                ? "text-green-600"
+                                : "text-blue-600"
+                            }`}
                         >
                           {booking.status}
                         </span>
