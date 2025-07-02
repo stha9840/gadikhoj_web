@@ -1,6 +1,6 @@
 import React from "react";
 import { FaTrashAlt } from "react-icons/fa"; 
-import { useDeleteBooking } from "../../hooks/useBooking";
+import { useDeleteBooking } from "../../../hooks/useBooking";
 
 export default function BookingDeleteModal({ bookingId, onClose }) {
   const { mutate: deleteBooking, isLoading } = useDeleteBooking();

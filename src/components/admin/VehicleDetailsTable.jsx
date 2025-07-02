@@ -108,7 +108,7 @@ export default function VehicleDetailsTable() {
                   <img
                     src={
                       vehicle.filepath
-                        ? `/${vehicle.filepath}`
+                        ? `http://localhost:5000/uploads/${vehicle.filepath}`
                         : "/placeholder.jpg"
                     }
                     alt={vehicle.vehicleName}

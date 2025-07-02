@@ -2,8 +2,8 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import { useUpdateBooking } from "../../hooks/useBooking"; // Adjust path as needed
-import { useGetOneBooking } from "../../hooks/useBooking"; // You need this hook to fetch individual booking
+import { useUpdateBooking } from "../../../hooks/useBooking"; // Adjust path as needed
+import { useGetOneBooking } from "../../../hooks/useBooking"; // You need this hook to fetch individual booking
 
 export default function UpdateBookingModal({ bookingId, showModal, onClose, onSuccess }) {
   console.log("Booking ID received in modal:", bookingId);  

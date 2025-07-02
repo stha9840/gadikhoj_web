@@ -1,6 +1,6 @@
 import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "../../api/Api";
+import axios from "../../../api/Api";
 
 export default function UndoCancelModal({ bookingId, onClose }) {
   const queryClient = useQueryClient();

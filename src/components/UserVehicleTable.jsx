@@ -6,7 +6,7 @@ import {
   FaMoneyBillWave,
 } from "react-icons/fa";
 import { useAdminVehicles } from "../../src/hooks/admin/useAdminVehicle";
-import BookingModal from "../../src/components/auth/BookingModal"; // Adjust the path if needed
+import BookingModal from "../../src/components/auth/Booking/BookingModal"; // Adjust the path if needed
 
 export default function UserVehicleTable() {
   const { vehicles, isLoading, isError, error } = useAdminVehicles();
@@ -50,7 +50,7 @@ export default function UserVehicleTable() {
                   <img
                     src={
                       vehicle.filepath
-                        ? `/${vehicle.filepath}`
+                        ? `http://localhost:5000/uploads/${vehicle.filepath}`
                         : "/placeholder.jpg"
                     }
                     alt={vehicle.vehicleName}

@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "../api/Api";
 import CancelBookingModal from "../components/auth/CancelBookingModal";
-import UndoCancelModal from "../components/auth/UndoCancelModal";
-import UpdateBookingModal from "../components/auth/UpdateBookingModal";
-import BookingDeleteModal from "../components/auth/BookingDeleteModal"; 
+import UndoCancelModal from "../components/auth/Booking/UndoCancelModal";
+import UpdateBookingModal from "../components/auth/Booking/UpdateBookingModal";
+import BookingDeleteModal from "../components/auth/Booking/BookingDeleteModal";
 import { FaTimesCircle, FaUndoAlt, FaEdit, FaTrashAlt } from "react-icons/fa";
+
+const BACKEND_URL = "http://localhost:5000";
 
 const fetchUserBookings = async () => {
   const { data } = await axios.get("/bookings/my");
@@ -69,7 +71,7 @@ export default function MyBookingPage() {
                 <img
                   src={
                     booking.vehicleId?.filepath
-                      ? `/${booking.vehicleId.filepath}`
+                      ? `${BACKEND_URL}/uploads/${booking.vehicleId.filepath}`
                       : "/placeholder.jpg"
                   }
                   alt={booking.vehicleId?.vehicleName || "Vehicle"}
