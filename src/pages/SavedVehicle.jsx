@@ -3,43 +3,59 @@ import {
   FaWeightHanging,
   FaGasPump,
   FaUserFriends,
+  FaTrash,
+  FaCalendarCheck,
 } from "react-icons/fa";
-import { FaTrash, FaCalendarCheck } from "react-icons/fa"; // Booking icon
 import { useSavedVehicles, useRemoveSavedVehicle } from "../hooks/useSaveVehicle";
-import BookingModal from "../components/auth/Booking/BookingModal"; // Make sure path is correct
+import BookingModal from "../components/auth/Booking/BookingModal"; // Adjust if path differs
 
 export default function SavedVehicle() {
   const { savedVehicles, isLoading, isError, error } = useSavedVehicles();
   const { mutate: removeVehicle } = useRemoveSavedVehicle();
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [vehicleToRemove, setVehicleToRemove] = useState(null);
 
-  const handleRemove = (vehicleId) => {
-    if (window.confirm("Remove this vehicle from your favorites?")) {
-      removeVehicle(vehicleId);
+  const confirmRemove = () => {
+    if (vehicleToRemove) {
+      removeVehicle(vehicleToRemove);
+      setVehicleToRemove(null);
     }
   };
 
-  return (
-    <div className="min-h-screen py-8 px-4 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <FaCalendarCheck className="text-indigo-600" />
-        Your Saved Vehicles
-      </h2>
+  const cancelRemove = () => {
+    setVehicleToRemove(null);
+  };
 
+  const shouldCenterContent = isLoading || isError || savedVehicles.length === 0;
+
+  return (
+    <div
+      className={`min-h-screen py-8 px-4 max-w-7xl mx-auto ${shouldCenterContent ? "flex flex-col justify-center items-center text-center" : ""
+        }`}
+    >
+      {/* Top-left title */}
+      <div className="flex justify-start mb-4 w-full">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <FaCalendarCheck className="text-indigo-600" />
+          Your Saved Vehicles
+        </h2>
+      </div>
+
+
+      {/* Booking Modal */}
       <BookingModal
         showModal={!!selectedVehicle}
         onClose={() => setSelectedVehicle(null)}
         vehicle={selectedVehicle}
       />
 
+      {/* Main Content */}
       {isLoading ? (
-        <p className="text-center text-gray-500">Loading saved vehicles...</p>
+        <p className="text-gray-500">Loading saved vehicles...</p>
       ) : isError ? (
-        <p className="text-center text-red-500">Error: {error.message}</p>
+        <p className="text-red-500">Error: {error.message}</p>
       ) : savedVehicles.length === 0 ? (
-        <div className="text-center mt-10 text-gray-500">
-          <p className="text-xl">You have no saved vehicles yet.</p>
-        </div>
+        <p className="text-gray-500 text-xl">You have no saved vehicles yet.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
           {savedVehicles.map(({ vehicleId }) => (
@@ -95,7 +111,7 @@ export default function SavedVehicle() {
                     </button>
 
                     <button
-                      onClick={() => handleRemove(vehicleId._id)}
+                      onClick={() => setVehicleToRemove(vehicleId._id)}
                       className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-1.5 rounded-lg flex items-center gap-1"
                       title="Remove from Favorites"
                     >
@@ -106,6 +122,30 @@ export default function SavedVehicle() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Remove Confirmation Modal */}
+      {vehicleToRemove && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg text-center">
+            <h3 className="text-lg font-semibold mb-4">Confirm Removal</h3>
+            <p className="mb-6">Do you want to remove this vehicle from your favorites?</p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={cancelRemove}
+                className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmRemove}
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

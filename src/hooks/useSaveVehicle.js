@@ -30,7 +30,7 @@ export const useAddSavedVehicle = () => {
     mutationKey: ["add_saved_vehicle"],
     mutationFn: addSavedVehicleService,
     onSuccess: () => {
-      toast.success("Vehicle added to favorites");
+      toast.success("Vehicle Saved");
       queryClient.invalidateQueries(["saved_vehicles"]);
     },
     onError: (err) => {
@@ -47,7 +47,7 @@ export const useRemoveSavedVehicle = () => {
     mutationKey: ["remove_saved_vehicle"],
     mutationFn: removeSavedVehicleService,
     onSuccess: () => {
-      toast.success("Vehicle removed from favorites");
+      toast.error("Vehicle removed from Save");
       queryClient.invalidateQueries(["saved_vehicles"]);
     },
     onError: (err) => {

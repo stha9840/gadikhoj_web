@@ -4,25 +4,39 @@ import {
   FaGasPump,
   FaUserFriends,
 } from "react-icons/fa";
-import { FaMoneyBillWave, FaHeart } from "react-icons/fa6";
+import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { useAdminVehicles } from "../../src/hooks/admin/useAdminVehicle";
 import BookingModal from "../../src/components/auth/Booking/BookingModal";
-import { useAddSavedVehicle } from "../../src/hooks/useSaveVehicle";
+import {
+  useAddSavedVehicle,
+  useRemoveSavedVehicle,
+  useSavedVehicles,
+} from "../../src/hooks/useSaveVehicle";
 
 export default function UserVehicleTable() {
   const { vehicles, isLoading, isError, error } = useAdminVehicles();
   const [selectedVehicle, setSelectedVehicle] = useState(null);
-  const { mutate: addToSaved } = useAddSavedVehicle();
 
-  const handleSaveVehicle = (vehicleId) => {
-    addToSaved(vehicleId);
+  const { savedVehicles = [] } = useSavedVehicles();
+  const { mutate: addToSaved } = useAddSavedVehicle();
+  const { mutate: removeFromSaved } = useRemoveSavedVehicle();
+
+  const isVehicleSaved = (id) =>
+    savedVehicles.some((v) => v.vehicleId._id === id);
+
+  const toggleSaveVehicle = (vehicleId) => {
+    if (isVehicleSaved(vehicleId)) {
+      removeFromSaved(vehicleId);
+    } else {
+      addToSaved(vehicleId);
+    }
   };
 
   return (
-    <div className="min-h-screen py-8 px-4 bg-gray-50">
+    <div className="min-h-screen py-8 px-4 bg-[#f9fafb]">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-4">
-          <span className="text-sm font-medium text-gray-600">
+        <div className="mb-6">
+          <span className="text-sm font-medium text-gray-600 uppercase tracking-wide">
             Available Vehicles
           </span>
         </div>
@@ -44,67 +58,86 @@ export default function UserVehicleTable() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-            {vehicles.map((vehicle) => (
-              <div
-                key={vehicle._id}
-                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all border border-gray-200 overflow-hidden flex flex-col max-w-xs mx-auto"
-              >
-                <div className="h-52 flex items-center justify-center bg-white border-b">
-                  <img
-                    src={
-                      vehicle.filepath
-                        ? `http://localhost:5000/uploads/${vehicle.filepath}`
-                        : "/placeholder.jpg"
-                    }
-                    alt={vehicle.vehicleName}
-                    className="max-h-full max-w-[90%] object-contain"
-                  />
-                </div>
+            {vehicles.map((vehicle) => {
+              const isSaved = isVehicleSaved(vehicle._id);
 
-                <div className="p-4 flex-grow">
-                  <h3 className="font-semibold text-gray-800 text-base">
-                    {vehicle.vehicleName}
-                  </h3>
-                  <p className="text-xs text-gray-500">2024</p>
+              return (
+                <div
+                  key={vehicle._id}
+                  className="relative rounded-xl border border-black-200 bg-white overflow-hidden flex flex-col transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                >
+                  {/* Save Icon */}
+                  <button
+                    onClick={() => toggleSaveVehicle(vehicle._id)}
+                    className="absolute top-3 right-3 z-10 p-1 bg-transparent focus:outline-none active:outline-none focus:ring-0 active:ring-0"
+                    title={isSaved ? "Unsave" : "Save"}
+                    style={{ border: "none" }}
+                  >
+                    {isSaved ? (
+                      <FaHeart className="text-black text-xl" />
+                    ) : (
+                      <FaRegHeart className="text-bla-400 text-xl" />
+                    )}
+                  </button>
 
-                  <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <FaWeightHanging className="text-blue-500" />
-                      {vehicle.loadCapacityKg} kg
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <FaGasPump className="text-green-500" />
-                      {vehicle.fuelCapacityLitres} L
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <FaUserFriends className="text-indigo-500" />
-                      {vehicle.passengerCapacity}
-                    </div>
+                  {/* Vehicle Image */}
+                  <div className="h-40 flex items-center justify-center border-b">
+                    <img
+                      src={
+                        vehicle.filepath
+                          ? `http://localhost:5000/uploads/${vehicle.filepath}`
+                          : "/placeholder.jpg"
+                      }
+                      alt={vehicle.vehicleName}
+                      className="max-h-full max-w-[90%] object-contain"
+                    />
                   </div>
 
-                  <div className="flex justify-between items-center mt-6 border-t pt-3">
-                    <div className="text-primary font-bold text-base text-green-600">
-                      NPR {vehicle.pricePerTrip}
+                  {/* Content */}
+                  <div className="p-4 flex flex-col justify-between flex-grow">
+                    <div>
+                      <h3 className="font-semibold text-gray-800 text-base">
+                        {vehicle.vehicleName}
+                      </h3>
+                      <p className="text-xs text-[#64748b]">
+                        {vehicle.vehicleType || "Unknown Type"}
+                      </p>
+
+                      {/* Vehicle Specs */}
+                      <div className="flex gap-4 mt-4 text-sm text-[#64748b]">
+                        <div className="flex items-center gap-1">
+                          <FaGasPump style={{ color: "#90A3BF" }} />
+                          {vehicle.fuelCapacityLitres}L
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <FaWeightHanging style={{ color: "#90A3BF" }} />
+                          {vehicle.loadCapacityKg}kg
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <FaUserFriends style={{ color: "#90A3BF" }} />
+                          {vehicle.passengerCapacity} People
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
+
+                    {/* Bottom: Price + Rent Now */}
+                    <div className="flex justify-between items-center mt-6 border-t pt-3">
+                      <div className="text-[#0f766e] font-semibold text-base">
+                        ${vehicle.pricePerTrip.toFixed(2)}
+                        <span className="text-gray-500 text-xs"> /day</span>
+                      </div>
+
                       <button
                         onClick={() => setSelectedVehicle(vehicle)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-3 py-1.5 rounded-lg"
+                        className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-1.5 rounded-md"
                       >
                         Rent Now
                       </button>
-                      <button
-                        onClick={() => handleSaveVehicle(vehicle._id)}
-                        className="bg-red-500 hover:bg-red-600 text-white text-sm px-2 py-1.5 rounded-lg flex items-center"
-                        title="Add to Favorites"
-                      >
-                        <FaHeart />
-                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
