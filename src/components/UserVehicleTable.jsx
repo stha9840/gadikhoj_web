@@ -3,19 +3,19 @@ import {
   FaWeightHanging,
   FaGasPump,
   FaUserFriends,
-  FaMoneyBillWave,
 } from "react-icons/fa";
+import { FaMoneyBillWave } from "react-icons/fa6";
 import { useAdminVehicles } from "../../src/hooks/admin/useAdminVehicle";
-import BookingModal from "../../src/components/auth/Booking/BookingModal"; // Adjust the path if needed
+import BookingModal from "../../src/components/auth/Booking/BookingModal"; // Adjust path as needed
 
 export default function UserVehicleTable() {
   const { vehicles, isLoading, isError, error } = useAdminVehicles();
   const [selectedVehicle, setSelectedVehicle] = useState(null);
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <div className="min-h-screen py-8 px-4 bg-gray-50">
       <div className="max-w-7xl mx-auto">
-        {/* Small label on top left */}
+        {/* Label */}
         <div className="mb-4">
           <span className="text-sm font-medium text-gray-600">
             Available Vehicles
@@ -44,9 +44,10 @@ export default function UserVehicleTable() {
             {vehicles.map((vehicle) => (
               <div
                 key={vehicle._id}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all border border-gray-200 overflow-hidden flex flex-col hover:scale-[1.02] duration-200 max-w-xs"
+                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all border border-gray-200 overflow-hidden flex flex-col max-w-xs mx-auto"
               >
-                <div className="relative">
+                {/* Image */}
+                <div className="h-52 flex items-center justify-center bg-white border-b">
                   <img
                     src={
                       vehicle.filepath
@@ -54,47 +55,45 @@ export default function UserVehicleTable() {
                         : "/placeholder.jpg"
                     }
                     alt={vehicle.vehicleName}
-                    className="w-full h-32 object-cover"
+                    className="max-h-full max-w-[90%] object-contain"
                   />
                 </div>
 
-                <div className="p-3 flex-grow">
-                  <div className="flex justify-between items-center mb-1">
-                    <h3 className="font-bold text-md text-gray-800 truncate">
-                      {vehicle.vehicleName}
-                    </h3>
-                    <span className="text-xs font-semibold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">
-                      {vehicle.vehicleType}
-                    </span>
-                  </div>
+                {/* Info */}
+                <div className="p-4 flex-grow">
+                  <h3 className="font-semibold text-gray-800 text-base">
+                    {vehicle.vehicleName}
+                  </h3>
+                  <p className="text-xs text-gray-500">2024</p>
 
-                  <div className="grid grid-cols-2 gap-1 text-xs text-gray-600">
+                  {/* Features */}
+                  <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-600">
                     <div className="flex items-center gap-1">
-                      <FaWeightHanging className="text-indigo-500" />{" "}
+                      <FaWeightHanging className="text-blue-500" />
                       {vehicle.loadCapacityKg} kg
                     </div>
                     <div className="flex items-center gap-1">
-                      <FaGasPump className="text-indigo-500" />{" "}
+                      <FaGasPump className="text-green-500" />
                       {vehicle.fuelCapacityLitres} L
                     </div>
                     <div className="flex items-center gap-1">
-                      <FaUserFriends className="text-indigo-500" />{" "}
+                      <FaUserFriends className="text-indigo-500" />
                       {vehicle.passengerCapacity}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <FaMoneyBillWave className="text-indigo-500" /> NPR{" "}
-                      {vehicle.pricePerTrip}
-                    </div>
                   </div>
-                </div>
 
-                <div className="p-3 pt-0">
-                  <button
-                    onClick={() => setSelectedVehicle(vehicle)}
-                    className="w-full bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 text-white font-medium py-2 rounded-lg transition"
-                  >
-                    Book Now
-                  </button>
+                  {/* Price and Button */}
+                  <div className="flex justify-between items-center mt-6 border-t pt-3">
+                    <div className="text-primary font-bold text-base text-green-600">
+                      NPR {vehicle.pricePerTrip}
+                    </div>
+                    <button
+                      onClick={() => setSelectedVehicle(vehicle)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg"
+                    >
+                      Rent Now
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

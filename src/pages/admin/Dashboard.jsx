@@ -3,7 +3,7 @@ import TotalCarsListed from '../../components/admin/dashboard/TotalCarsListed';
 import TotalUsers from '../../components/admin/dashboard/TotalUsers';
 import CurrentBookings from '../../components/admin/dashboard/CurrentBookings';
 import NotificationsCard from '../../components/admin/dashboard/NotificationsCard';
-import RevenueSummary from '../../components/admin/dashboard/RevenueSummary';
+import BookingSummaryChart from '../../components/admin/dashboard/BookingSummaryChart';
 import UserVehicleStatsChart from '../../components/admin/dashboard/UserVehicleStatsChart';
 import RecentActivity from '../../components/admin/dashboard/RecentActivities';
 
@@ -22,7 +22,7 @@ const Dashboard = () => {
       {/* Wrap RevenueSummary and UserVehicleStatsChart side by side */}
       <div className="flex flex-col md:flex-row gap-6">
   <div className="flex-1 h-full">
-    <RevenueSummary />
+    <BookingSummaryChart />
   </div>
   <div className="flex-1 h-full">
     <UserVehicleStatsChart />

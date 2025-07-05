@@ -15,6 +15,7 @@ import BookingTable from "../components/BookingTable";
 
 import AdminRoute from "./AdminRoute";
 import UserRoute from "./UserRoute";
+// import SavedVehicle from "../pages/SavedVehicle";
 
 const AppRouter = () => {
   return (
@@ -44,6 +45,7 @@ const AppRouter = () => {
         <Route element={<UserLayout />}>
           <Route path="/home" element={<HomePage />} />
           <Route path="/mybooking" element={<MyBookingPage />} />
+          {/* <Route path="/savedvehicle" element={<SavedVehicle />} /> */}
         </Route>
       </Route>
 

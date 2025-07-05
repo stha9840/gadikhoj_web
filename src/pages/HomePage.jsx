@@ -15,8 +15,8 @@ export default function HomePage() {
       <LandingSection />
       <LocationDate/>
       <BrandsSection />
-      <HowItWorks />
       <AvailableVehicles />
+      <HowItWorks />
     </div>
   );
 }
