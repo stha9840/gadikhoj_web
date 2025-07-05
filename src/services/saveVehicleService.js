@@ -1,5 +1,4 @@
-    // src/services/savedVehicleService.js
-    import axios from "../api/saveVehicleApi";
+  import axios from "../api/Api";
 
     // 🔹 Get all saved vehicles of current user
     export const getSavedVehiclesService = () => {

@@ -4,7 +4,7 @@ import {
   getSavedVehiclesService,
   addSavedVehicleService,
   removeSavedVehicleService,
-} from "../services/savedVehicleService";
+} from "../services/saveVehicleService";
 import { toast } from "react-toastify";
 
 // 🔹 Get all saved vehicles for current user
