@@ -80,12 +80,12 @@ export default function VehicleDetailsTable() {
           onClose={() => setUpdateId(null)}
         />
         <DeleteModal
-          isOpen={!!deleteId}
-          onClose={() => setDeleteId(null)}
-          onConfirm={handleDelete}
-          title="Delete Vehicle"
-          description="Are you sure you want to delete this vehicle? This action cannot be undone."
-        />
+  isOpen={!!deleteId}
+  onClose={() => setDeleteId(null)}
+  onConfirm={handleDelete}
+  title="Delete Vehicle"
+  description="Are you sure you want to delete this vehicle? This action cannot be undone."
+/>
 
         {/* Content */}
         {isLoading ? (
