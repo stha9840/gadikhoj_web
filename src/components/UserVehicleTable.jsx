@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaWeightHanging,
   FaGasPump,
@@ -13,6 +13,9 @@ import {
   useSavedVehicles,
 } from "../../src/hooks/useSaveVehicle";
 
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 export default function UserVehicleTable() {
   const { vehicles, isLoading, isError, error } = useAdminVehicles();
   const [selectedVehicle, setSelectedVehicle] = useState(null);
@@ -20,6 +23,13 @@ export default function UserVehicleTable() {
   const { savedVehicles = [] } = useSavedVehicles();
   const { mutate: addToSaved } = useAddSavedVehicle();
   const { mutate: removeFromSaved } = useRemoveSavedVehicle();
+
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: false,
+    });
+  }, []);
 
   const isVehicleSaved = (id) =>
     savedVehicles.some((v) => v.vehicleId._id === id);
@@ -64,6 +74,7 @@ export default function UserVehicleTable() {
               return (
                 <div
                   key={vehicle._id}
+                  data-aos="fade-up"
                   className="relative rounded-xl border border-black-200 bg-white overflow-hidden flex flex-col transition-transform duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   {/* Save Icon */}
