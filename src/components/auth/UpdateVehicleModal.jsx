@@ -15,6 +15,7 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose, onSu
     loadCapacityKg: Yup.number().required("Load capacity is required").positive(),
     passengerCapacity: Yup.string().required("Passenger capacity is required"),
     pricePerTrip: Yup.number().required("Price per trip is required").positive(),
+    vehicleDescription: Yup.string().required("Description is required"), // ✅ Added
   });
 
   const formik = useFormik({
@@ -26,11 +27,11 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose, onSu
       loadCapacityKg: vehicle?.loadCapacityKg || "",
       passengerCapacity: vehicle?.passengerCapacity || "",
       pricePerTrip: vehicle?.pricePerTrip || "",
-      imageFile: null, // for new image upload
+      vehicleDescription: vehicle?.vehicleDescription || "", // ✅ Added
+      imageFile: null,
     },
     validationSchema,
     onSubmit: (values, { setSubmitting }) => {
-      // Prepare FormData for multipart
       const formData = new FormData();
       formData.append("vehicleName", values.vehicleName);
       formData.append("vehicleType", values.vehicleType);
@@ -38,6 +39,7 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose, onSu
       formData.append("loadCapacityKg", values.loadCapacityKg);
       formData.append("passengerCapacity", values.passengerCapacity);
       formData.append("pricePerTrip", values.pricePerTrip);
+      formData.append("vehicleDescription", values.vehicleDescription); // ✅ Added
       if (values.imageFile) {
         formData.append("image", values.imageFile);
       }
@@ -74,99 +76,42 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose, onSu
           <p className="text-red-500">Failed to load vehicle data</p>
         ) : (
           <form onSubmit={formik.handleSubmit} className="space-y-4">
-            {/* Vehicle Name */}
-            <div>
-              <label className="block mb-1">Vehicle Name</label>
-              <input
-                name="vehicleName"
-                type="text"
-                className="w-full border p-2 rounded"
-                value={formik.values.vehicleName}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.vehicleName && formik.errors.vehicleName && (
-                <div className="text-red-500 text-sm">{formik.errors.vehicleName}</div>
-              )}
-            </div>
+            {[
+              { name: "vehicleName", label: "Vehicle Name", type: "text" },
+              { name: "vehicleType", label: "Vehicle Type", type: "text" },
+              { name: "fuelCapacityLitres", label: "Fuel Capacity (Litres)", type: "number" },
+              { name: "loadCapacityKg", label: "Load Capacity (Kg)", type: "number" },
+              { name: "passengerCapacity", label: "Passenger Capacity", type: "text" },
+              { name: "pricePerTrip", label: "Price per Trip", type: "number" },
+            ].map(({ name, label, type }) => (
+              <div key={name}>
+                <label className="block mb-1">{label}</label>
+                <input
+                  name={name}
+                  type={type}
+                  className="w-full border p-2 rounded"
+                  value={formik.values[name]}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched[name] && formik.errors[name] && (
+                  <div className="text-red-500 text-sm">{formik.errors[name]}</div>
+                )}
+              </div>
+            ))}
 
-            {/* Vehicle Type */}
+            {/* ✅ Vehicle Description */}
             <div>
-              <label className="block mb-1">Vehicle Type</label>
-              <input
-                name="vehicleType"
-                type="text"
-                className="w-full border p-2 rounded"
-                value={formik.values.vehicleType}
+              <label className="block mb-1">Description</label>
+              <textarea
+                name="vehicleDescription"
+                className="w-full border p-2 rounded h-24"
+                value={formik.values.vehicleDescription}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.touched.vehicleType && formik.errors.vehicleType && (
-                <div className="text-red-500 text-sm">{formik.errors.vehicleType}</div>
-              )}
-            </div>
-
-            {/* Fuel Capacity */}
-            <div>
-              <label className="block mb-1">Fuel Capacity (Litres)</label>
-              <input
-                name="fuelCapacityLitres"
-                type="number"
-                className="w-full border p-2 rounded"
-                value={formik.values.fuelCapacityLitres}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.fuelCapacityLitres && formik.errors.fuelCapacityLitres && (
-                <div className="text-red-500 text-sm">{formik.errors.fuelCapacityLitres}</div>
-              )}
-            </div>
-
-            {/* Load Capacity */}
-            <div>
-              <label className="block mb-1">Load Capacity (Kg)</label>
-              <input
-                name="loadCapacityKg"
-                type="number"
-                className="w-full border p-2 rounded"
-                value={formik.values.loadCapacityKg}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.loadCapacityKg && formik.errors.loadCapacityKg && (
-                <div className="text-red-500 text-sm">{formik.errors.loadCapacityKg}</div>
-              )}
-            </div>
-
-            {/* Passenger Capacity */}
-            <div>
-              <label className="block mb-1">Passenger Capacity</label>
-              <input
-                name="passengerCapacity"
-                type="text"
-                className="w-full border p-2 rounded"
-                value={formik.values.passengerCapacity}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.passengerCapacity && formik.errors.passengerCapacity && (
-                <div className="text-red-500 text-sm">{formik.errors.passengerCapacity}</div>
-              )}
-            </div>
-
-            {/* Price per Trip */}
-            <div>
-              <label className="block mb-1">Price per Trip</label>
-              <input
-                name="pricePerTrip"
-                type="number"
-                className="w-full border p-2 rounded"
-                value={formik.values.pricePerTrip}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.pricePerTrip && formik.errors.pricePerTrip && (
-                <div className="text-red-500 text-sm">{formik.errors.pricePerTrip}</div>
+              {formik.touched.vehicleDescription && formik.errors.vehicleDescription && (
+                <div className="text-red-500 text-sm">{formik.errors.vehicleDescription}</div>
               )}
             </div>
 
@@ -183,7 +128,6 @@ export default function UpdateVehicleModal({ vehicleId, showModal, onClose, onSu
               />
             </div>
 
-            {/* Buttons */}
             <div className="flex justify-end gap-2">
               <button
                 type="button"

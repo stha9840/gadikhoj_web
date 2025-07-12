@@ -3,6 +3,8 @@ import {
   FaWeightHanging,
   FaGasPump,
   FaUserFriends,
+  FaStar,
+  FaRegStar,
 } from "react-icons/fa";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { useAdminVehicles } from "../../src/hooks/admin/useAdminVehicle";
@@ -12,25 +14,112 @@ import {
   useRemoveSavedVehicle,
   useSavedVehicles,
 } from "../../src/hooks/useSaveVehicle";
+import { useVehicleReviews, useAddReview } from "../../src/hooks/useReview";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
 
+function ReviewModal({ show, onClose, vehicle, onReviewAdded }) {
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const { mutate: addReview, isLoading } = useAddReview();
+
+  if (!show) return null;
+
+  const handleStarClick = (starValue) => {
+    setRating(starValue);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (rating === 0) {
+      alert("Please select a star rating");
+      return;
+    }
+    addReview(
+      { vehicleId: vehicle._id, rating, comment },
+      {
+        onSuccess: () => {
+          setRating(0);
+          setComment("");
+          onClose();
+          if (onReviewAdded) onReviewAdded();
+        },
+      }
+    );
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg w-full max-w-md space-y-4">
+        <h2 className="text-xl font-semibold mb-4">Add Your Review</h2>
+
+        <div className="flex gap-1 mb-4 justify-center">
+          {[1, 2, 3, 4, 5].map((star) =>
+            star <= rating ? (
+              <FaStar
+                key={star}
+                onClick={() => handleStarClick(star)}
+                className="text-yellow-400 cursor-pointer"
+                size={30}
+              />
+            ) : (
+              <FaRegStar
+                key={star}
+                onClick={() => handleStarClick(star)}
+                className="text-yellow-400 cursor-pointer"
+                size={30}
+              />
+            )
+          )}
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <textarea
+            rows={4}
+            placeholder="Write your review (optional)"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="w-full border rounded p-2"
+          />
+
+          <div className="flex justify-end space-x-2 mt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-300 rounded"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="px-4 py-2 bg-blue-600 text-white rounded"
+            >
+              {isLoading ? "Submitting..." : "Submit Review"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export default function UserVehicleTable() {
   const { vehicles, isLoading, isError, error } = useAdminVehicles();
   const [selectedVehicle, setSelectedVehicle] = useState(null);
-
   const { savedVehicles = [] } = useSavedVehicles();
   const { mutate: addToSaved } = useAddSavedVehicle();
   const { mutate: removeFromSaved } = useRemoveSavedVehicle();
 
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: false,
-    });
-  }, []);
+  // For review modal
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewVehicle, setReviewVehicle] = useState(null);
 
+  // Cache vehicle reviews to get avg rating per vehicle
+  const vehicleReviewsCache = {};
+
+  // Helper to check if vehicle is saved
   const isVehicleSaved = (id) =>
     savedVehicles.some((v) => v.vehicleId._id === id);
 
@@ -41,6 +130,57 @@ export default function UserVehicleTable() {
       addToSaved(vehicleId);
     }
   };
+
+  // Get average rating for a vehicle's reviews
+  const getAverageRating = (reviews) => {
+    if (!reviews.length) return 0;
+    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+    return sum / reviews.length;
+  };
+
+  // Custom hook call inside map is invalid, so fetch reviews in effect and store locally
+  const [reviewsMap, setReviewsMap] = useState({});
+
+  useEffect(() => {
+    // fetch reviews for all vehicles on mount or vehicles change
+    if (!vehicles) return;
+
+    vehicles.forEach(async (vehicle) => {
+      // fetch reviews for each vehicle
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/reviews/${vehicle._id}`
+        );
+        const data = await res.json();
+        setReviewsMap((prev) => ({ ...prev, [vehicle._id]: data }));
+      } catch (err) {
+        console.error("Failed to fetch reviews", err);
+      }
+    });
+  }, [vehicles]);
+
+  // Open review modal when star clicked
+  const handleStarClick = (vehicle, star) => {
+    setReviewVehicle(vehicle);
+    setShowReviewModal(true);
+  };
+
+  // Refresh reviews after adding a new one
+  const onReviewAdded = () => {
+    if (!reviewVehicle) return;
+    fetch(`http://localhost:5000/api/reviews/${reviewVehicle._id}`)
+      .then((res) => res.json())
+      .then((data) =>
+        setReviewsMap((prev) => ({ ...prev, [reviewVehicle._id]: data }))
+      );
+  };
+
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: false,
+    });
+  }, []);
 
   return (
     <div className="min-h-screen py-8 px-4 bg-[#f9fafb]">
@@ -57,6 +197,13 @@ export default function UserVehicleTable() {
           vehicle={selectedVehicle}
         />
 
+        <ReviewModal
+          show={showReviewModal}
+          onClose={() => setShowReviewModal(false)}
+          vehicle={reviewVehicle}
+          onReviewAdded={onReviewAdded}
+        />
+
         {isLoading ? (
           <p className="text-center text-gray-500">Loading vehicles...</p>
         ) : isError ? (
@@ -70,6 +217,8 @@ export default function UserVehicleTable() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             {vehicles.map((vehicle) => {
               const isSaved = isVehicleSaved(vehicle._id);
+              const reviews = reviewsMap[vehicle._id] || [];
+              const avgRating = getAverageRating(reviews);
 
               return (
                 <div
@@ -107,9 +256,30 @@ export default function UserVehicleTable() {
                   {/* Content */}
                   <div className="p-4 flex flex-col justify-between flex-grow">
                     <div>
-                      <h3 className="font-semibold text-gray-800 text-base">
-                        {vehicle.vehicleName}
-                      </h3>
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold text-gray-800 text-base">
+                          {vehicle.vehicleName}
+                        </h3>
+                        {/* Star rating display, clickable to open review modal */}
+                        <div className="flex items-center gap-0.5 cursor-pointer">
+                          {[1, 2, 3, 4, 5].map((star) =>
+                            star <= Math.round(avgRating) ? (
+                              <FaStar
+                                key={star}
+                                className="text-yellow-400"
+                                onClick={() => handleStarClick(vehicle, star)}
+                              />
+                            ) : (
+                              <FaRegStar
+                                key={star}
+                                className="text-yellow-400"
+                                onClick={() => handleStarClick(vehicle, star)}
+                              />
+                            )
+                          )}
+                        </div>
+                      </div>
+
                       <p className="text-xs text-[#64748b]">
                         {vehicle.vehicleType || "Unknown Type"}
                       </p>
@@ -134,7 +304,7 @@ export default function UserVehicleTable() {
                     {/* Bottom: Price + Rent Now */}
                     <div className="flex justify-between items-center mt-6 border-t pt-3">
                       <div className="text-[#0f766e] font-semibold text-base">
-                        ${vehicle.pricePerTrip.toFixed(2)}
+                        Rs{vehicle.pricePerTrip.toFixed(2)}
                         <span className="text-gray-500 text-xs"> /day</span>
                       </div>
 

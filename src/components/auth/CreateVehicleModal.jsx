@@ -19,6 +19,7 @@ const validationSchema = Yup.object({
   pricePerTrip: Yup.number()
     .required("Price is required")
     .min(0, "Price must be at least 0"),
+  vehicleDescription: Yup.string().required("Description is required"),
   image: Yup.mixed().required("Image is required"),
 });
 
@@ -33,6 +34,7 @@ const CreateVehicleModal = ({ showModal, onClose }) => {
       loadCapacityKg: "",
       passengerCapacity: "",
       pricePerTrip: "",
+      vehicleDescription: "", 
       image: null,
     },
     validationSchema,
@@ -45,6 +47,7 @@ const CreateVehicleModal = ({ showModal, onClose }) => {
         loadCapacityKg: Number(values.loadCapacityKg),
         passengerCapacity: Number(values.passengerCapacity),
         pricePerTrip: Number(values.pricePerTrip),
+        vehicleDescription: values.vehicleDescription, 
       };
 
       formData.append("vehicle", JSON.stringify(vehicle));
@@ -91,6 +94,22 @@ const CreateVehicleModal = ({ showModal, onClose }) => {
             </div>
           ))}
 
+          {/*  Vehicle Description */}
+          <div>
+            <textarea
+              name="vehicleDescription"
+              placeholder="Vehicle Description"
+              value={formik.values.vehicleDescription}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="w-full border p-2 rounded h-24"
+            />
+            {formik.touched.vehicleDescription && formik.errors.vehicleDescription && (
+              <div className="text-red-500 text-sm">{formik.errors.vehicleDescription}</div>
+            )}
+          </div>
+
+          {/* Image Upload */}
           <div>
             <input
               type="file"
