@@ -7,6 +7,7 @@ import {
   FaRegStar,
 } from "react-icons/fa";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 import { useAdminVehicles } from "../../src/hooks/admin/useAdminVehicle";
 import BookingModal from "../../src/components/auth/Booking/BookingModal";
 import {
@@ -99,6 +100,7 @@ function ReviewModal({ show, onClose, vehicle, onReviewAdded }) {
 }
 
 export default function UserVehicleTable() {
+  const navigate = useNavigate();
   const { vehicles, isLoading, isError, error } = useAdminVehicles();
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const { savedVehicles = [] } = useSavedVehicles();
@@ -111,7 +113,7 @@ export default function UserVehicleTable() {
   const [reviewsMap, setReviewsMap] = useState({});
 
   const isVehicleSaved = (id) =>
-    savedVehicles.some((v) => v.vehicleId._id === id);
+    savedVehicles.some((v) => v?.vehicleId?._id === id);
 
   const toggleSaveVehicle = (vehicleId) => {
     if (isVehicleSaved(vehicleId)) {
@@ -179,7 +181,9 @@ export default function UserVehicleTable() {
         <ReviewListModal
           isOpen={showReviewListModal}
           onClose={() => setShowReviewListModal(false)}
-          reviews={reviewListVehicle ? reviewsMap[reviewListVehicle._id] || [] : []}
+          reviews={
+            reviewListVehicle ? reviewsMap[reviewListVehicle._id] || [] : []
+          }
           onAddReview={() => {
             setReviewVehicle(reviewListVehicle);
             setShowReviewModal(true);
@@ -221,20 +225,23 @@ export default function UserVehicleTable() {
                     )}
                   </button>
 
-                  <div className="h-40 flex items-center justify-center border-b">
-                    <img
-                      src={
-                        vehicle.filepath
-                          ? `http://localhost:5000/uploads/${vehicle.filepath}`
-                          : "/placeholder.jpg"
-                      }
-                      alt={vehicle.vehicleName}
-                      className="max-h-full max-w-[90%] object-contain"
-                    />
-                  </div>
-
-                  <div className="p-4 flex flex-col justify-between flex-grow">
-                    <div>
+                  {/* Clickable image + name */}
+                  <div
+                    onClick={() => navigate(`/vehicles/${vehicle._id}`)}
+                    className="cursor-pointer"
+                  >
+                    <div className="h-40 flex items-center justify-center border-b">
+                      <img
+                        src={
+                          vehicle.filepath
+                            ? `http://localhost:5000/uploads/${vehicle.filepath}`
+                            : "/placeholder.jpg"
+                        }
+                        alt={vehicle.vehicleName}
+                        className="max-h-full max-w-[90%] object-contain"
+                      />
+                    </div>
+                    <div className="p-4">
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-gray-800 text-base">
                           {vehicle.vehicleName}
@@ -250,7 +257,8 @@ export default function UserVehicleTable() {
                             )}
                           </div>
                           <p
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setReviewListVehicle(vehicle);
                               setShowReviewListModal(true);
                             }}
@@ -258,7 +266,6 @@ export default function UserVehicleTable() {
                           >
                             View Reviews
                           </p>
-
                         </div>
                       </div>
                       <p className="text-xs text-[#64748b]">
@@ -279,19 +286,19 @@ export default function UserVehicleTable() {
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div className="flex justify-between items-center mt-6 border-t pt-3">
-                      <div className="text-[#0f766e] font-semibold text-base">
-                        Rs{vehicle.pricePerTrip.toFixed(2)}
-                        <span className="text-gray-500 text-xs"> /day</span>
-                      </div>
-                      <button
-                        onClick={() => setSelectedVehicle(vehicle)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-1.5 rounded-md"
-                      >
-                        Rent Now
-                      </button>
+                  <div className="flex justify-between items-center mt-auto border-t pt-3 px-4 pb-4">
+                    <div className="text-[#0f766e] font-semibold text-base">
+                      Rs{vehicle.pricePerTrip.toFixed(2)}
+                      <span className="text-gray-500 text-xs"> /day</span>
                     </div>
+                    <button
+                      onClick={() => setSelectedVehicle(vehicle)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-1.5 rounded-md"
+                    >
+                      Rent Now
+                    </button>
                   </div>
                 </div>
               );
