@@ -27,3 +27,6 @@ export const updateOneVehicleApi = (id, data) =>
 // Delete vehicle by ID
 export const deleteOneVehicleApi = (id) => 
   axios.delete(`/admin/vehicle/${id}`);
+
+export const getVehicleTypesApi = () => 
+  axios.get("/vehicles/types");

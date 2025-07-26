@@ -4,7 +4,8 @@ import {
   createVehicleService,
   getOneVehicleService,
   updateVehicleService,
-  deleteVehicleService
+  deleteVehicleService,
+  getVehicleTypesService
 } from "../../services/admin/vehicleService";
 import { toast } from "react-toastify";
 
@@ -85,4 +86,18 @@ export const useDeleteVehicle = () => {
       toast.error(err.message || "Failed to delete vehicle");
     },
   });
+};
+export const useVehicleTypes = () => {
+  const query = useQuery({
+    queryKey: ["vehicle_types"],
+    queryFn: () => getVehicleTypesService(),
+    staleTime: 1000 * 60 * 5,  // cache for 5 minutes, adjust as needed
+  });
+
+  const vehicleTypes = query.data || [];
+
+  return {
+    ...query,
+    vehicleTypes,
+  };
 };

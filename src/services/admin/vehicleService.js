@@ -1,6 +1,6 @@
 import { 
   getAllVehicleApi, createVehicleApi, getOneVehicleApi, 
-  updateOneVehicleApi, deleteOneVehicleApi 
+  updateOneVehicleApi, deleteOneVehicleApi, getVehicleTypesApi
 } from "../../api/admin/vehicleApi";
 
 export const getAllVehicleService = async () => {
@@ -45,5 +45,13 @@ export const deleteVehicleService = async (id) => {
     return response.data;
   } catch (err) {
     throw err.response?.data || { message: 'Failed to delete vehicle' };
+  }
+};
+export const getVehicleTypesService = async () => {
+  try {
+    const response = await getVehicleTypesApi();
+    return response.data; // should be an array of strings (vehicle types)
+  } catch (err) {
+    throw err.response?.data || { message: 'Failed to fetch vehicle types' };
   }
 };

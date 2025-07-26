@@ -103,6 +103,7 @@ export default function UserVehicleTable() {
   const navigate = useNavigate();
   const { vehicles, isLoading, isError, error } = useAdminVehicles();
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [selectedType, setSelectedType] = useState("All");
   const { savedVehicles = [] } = useSavedVehicles();
   const { mutate: addToSaved } = useAddSavedVehicle();
   const { mutate: removeFromSaved } = useRemoveSavedVehicle();
@@ -111,6 +112,8 @@ export default function UserVehicleTable() {
   const [showReviewListModal, setShowReviewListModal] = useState(false);
   const [reviewListVehicle, setReviewListVehicle] = useState(null);
   const [reviewsMap, setReviewsMap] = useState({});
+  const vehicleTypes = ["All", ...new Set(vehicles.map((v) => v.vehicleType).filter(Boolean))]; // ← Line ~99
+
 
   const isVehicleSaved = (id) =>
     savedVehicles.some((v) => v?.vehicleId?._id === id);
@@ -159,11 +162,34 @@ export default function UserVehicleTable() {
   return (
     <div className="min-h-screen py-8 px-4 bg-[#f9fafb]">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <span className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-            Available Vehicles
-          </span>
-        </div>
+       <div className="mb-6 flex items-center justify-between">
+  <div>
+    <span className="text-sm font-medium text-gray-600 uppercase tracking-wide block mb-1">
+      Available Vehicles
+    </span>
+  </div>
+
+  <div className="text-right">
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      Filter by Vehicle Type
+    </label>
+    <select
+      value={selectedType}
+      onChange={(e) => setSelectedType(e.target.value)}
+      className="w-full max-w-xs border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+    >
+      {vehicleTypes.map((type) => (
+        <option key={type} value={type}>
+          {type}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
+
+
+
+
 
         <BookingModal
           showModal={!!selectedVehicle}
@@ -202,7 +228,9 @@ export default function UserVehicleTable() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-            {vehicles.map((vehicle) => {
+            {vehicles
+  .filter((v) => selectedType === "All" || v.vehicleType === selectedType)
+  .map((vehicle) => {
               const isSaved = isVehicleSaved(vehicle._id);
               const reviews = reviewsMap[vehicle._id] || [];
               const avgRating = getAverageRating(reviews);

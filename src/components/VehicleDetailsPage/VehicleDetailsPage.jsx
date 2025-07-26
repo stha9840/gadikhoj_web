@@ -54,7 +54,7 @@ const VehicleDetailsPage = () => {
           />
           <div>
             <h1 className="text-4xl font-extrabold text-gray-900">{vehicle.vehicleName}</h1>
-            <p className="text-gray-600 mt-3 leading-relaxed">{vehicle.description || "No description available."}</p>
+            <p className="text-gray-600 mt-3 leading-relaxed">{vehicle.vehicleDescription || "No description available."}</p>
 
             <div className="flex flex-wrap gap-8 mt-6 text-gray-700 text-base font-medium">
               <div className="flex items-center gap-2">
