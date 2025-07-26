@@ -6,4 +6,8 @@ export const updateOneUserApi = (id, data) => axios.put(`/admin/user/${id}`, dat
 export const deleteOneUserApi = (id) => axios.delete(`/admin/user/${id}`)
 export const getOneUserApi = (id) => axios.get("/admin/user/" + id)
 export const getUserCountApi = () => axios.get("/admin/user/count")
+// Fetch logged-in user profile
+export const getLoggedInUserApi = () => axios.get("/auth/me");
+export const updateLoggedInUserApi = (data) => axios.put("/auth/update", data);
+
 

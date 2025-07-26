@@ -3,7 +3,10 @@ import {
   createOneUserApi, 
   updateOneUserApi, 
   deleteOneUserApi,
-  getOneUserApi
+  getOneUserApi,
+  getLoggedInUserApi,
+  updateLoggedInUserApi
+
 } from "../../api/admin/userApi";
 
 // Fetch all users
@@ -56,4 +59,21 @@ export const getOneUserService = async (id) => {
 export const getUserCountService = async () => {
   const response = await getUserCountApi();
   return response.data;  // { success: true, total: 123 }
+};
+export const getLoggedInUserService = async () => {
+  try {
+    const response = await getLoggedInUserApi();
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || { message: "Failed to fetch user profile" };
+  }
+};
+
+export const updateLoggedInUserService = async (data) => {
+  try {
+    const response = await updateLoggedInUserApi(data);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || { message: "Failed to update user profile" };
+  }
 };

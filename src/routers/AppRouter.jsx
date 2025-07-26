@@ -14,6 +14,7 @@ import UserLayout from "../layouts/UserLayout";
 import BookingTable from "../components/BookingTable";
 import VehicleDetailPage from "../components/VehicleDetailsPage/VehicleDetailsPage";
 import SearchResultsPage from "../components/Search/SearchResultsPage";
+import UserProfilePage from "../pages/UserProfilePage";
 
 
 import AdminRoute from "./AdminRoute";
@@ -51,6 +52,7 @@ const AppRouter = () => {
           <Route path="/savedvehicle" element={<SavedVehicle />} />
           <Route path="/vehicles/:id" element={<VehicleDetailPage />} />
           <Route path="/search" element={<SearchResultsPage />} /> 
+          <Route path="/profile" element={<UserProfilePage />} /> 
         </Route>
       </Route>
 

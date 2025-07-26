@@ -5,7 +5,7 @@ import axios from 'axios';
 
 //useQuery -> Get request state
 import { useState } from "react";
-import { getAllUserService, createUserService, updateUserService, deleteUserService, getOneUserService } from "../../services/admin/userService";
+import { getAllUserService, createUserService, updateUserService, deleteUserService, getOneUserService, getLoggedInUserService,updateLoggedInUserService  } from "../../services/admin/userService";
 
 export const useAdminUser = (page = 1, limit = 5) => {
   const query = useQuery({
@@ -89,6 +89,29 @@ export const useDeleteOneUser = () =>{
 //     staleTime: 5 * 60 * 1000,
 //   });
 // };
+export const useLoggedInUser = () => {
+  return useQuery({
+    queryKey: ["logged_in_user"],
+    queryFn: getLoggedInUserService,
+    staleTime: 5 * 60 * 1000, // 5 minutes cache
+  });
+};
 
+// Update logged-in user profile
+export const useUpdateLoggedInUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateLoggedInUserService,
+    mutationKey: ["update_logged_in_user"],
+    onSuccess: () => {
+      toast.success("Profile updated");
+      queryClient.invalidateQueries(["logged_in_user"]);
+    },
+    onError: (err) => {
+      toast.error(err.message || "Update failed");
+    },
+  });
+};
 
 
