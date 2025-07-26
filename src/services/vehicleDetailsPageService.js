@@ -17,4 +17,12 @@ export const getRelatedVehiclesService = async (id) => {
     throw err.response?.data || { message: "Failed to load related vehicles" };
   }
 };
+export const searchVehiclesService = async (query) => {
+  try {
+    const response = await searchVehiclesApi(query);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || { message: "Search failed" };
+  }
+};
 
