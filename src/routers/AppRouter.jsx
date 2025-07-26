@@ -13,6 +13,7 @@ import MainLayout from "../layouts/admin/MainLayout";
 import UserLayout from "../layouts/UserLayout";
 import BookingTable from "../components/BookingTable";
 import VehicleDetailPage from "../components/VehicleDetailsPage/VehicleDetailsPage";
+import SearchResultsPage from "../components/Search/SearchResultsPage";
 
 
 import AdminRoute from "./AdminRoute";
@@ -49,6 +50,7 @@ const AppRouter = () => {
           <Route path="/mybooking" element={<MyBookingPage />} />
           <Route path="/savedvehicle" element={<SavedVehicle />} />
           <Route path="/vehicles/:id" element={<VehicleDetailPage />} />
+          <Route path="/search" element={<SearchResultsPage />} /> 
         </Route>
       </Route>
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom"; // <-- useNavigate
 import { Menu, X } from "lucide-react"; 
 import logo from "../assets/logo.png";
 
@@ -13,6 +13,19 @@ const navItems = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate(); 
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
+      setMenuOpen(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch();
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-white border-b border-gray-100 z-50">
@@ -40,14 +53,20 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Search bar */}
+        {/* Search bar (desktop) */}
         <div className="hidden md:flex items-center space-x-2">
           <input
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Search vehicles"
             className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-600"
           />
-          <button className="bg-blue-600 text-white text-sm rounded-md px-4 py-1.5 hover:bg-blue-700 transition">
+          <button
+            onClick={handleSearch}
+            className="bg-blue-600 text-white text-sm rounded-md px-4 py-1.5 hover:bg-blue-700 transition"
+          >
             Search
           </button>
         </div>
@@ -85,10 +104,16 @@ export default function Navbar() {
           <div className="flex space-x-2">
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="Search vehicles"
               className="flex-grow border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
-            <button className="bg-blue-600 text-white rounded-md px-4 py-1.5 text-sm hover:bg-blue-700 transition">
+            <button
+              onClick={handleSearch}
+              className="bg-blue-600 text-white rounded-md px-4 py-1.5 text-sm hover:bg-blue-700 transition"
+            >
               Search
             </button>
           </div>
