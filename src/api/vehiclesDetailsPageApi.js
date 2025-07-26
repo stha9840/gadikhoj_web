@@ -7,3 +7,6 @@ export const getVehicleByIdApi = (id) =>
 // Get related vehicles by vehicle ID
 export const getRelatedVehiclesApi = (id) =>
   axios.get(`/vehicles/related/${id}`);
+
+export const searchVehiclesApi = (query) =>
+  axios.get(`/vehicles/search?query=${query}`);

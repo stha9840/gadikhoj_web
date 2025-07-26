@@ -17,3 +17,4 @@ export const getRelatedVehiclesService = async (id) => {
     throw err.response?.data || { message: "Failed to load related vehicles" };
   }
 };
+
