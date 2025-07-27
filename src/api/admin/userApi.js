@@ -9,5 +9,7 @@ export const getUserCountApi = () => axios.get("/admin/user/count")
 // Fetch logged-in user profile
 export const getLoggedInUserApi = () => axios.get("/auth/me");
 export const updateLoggedInUserApi = (data) => axios.put("/auth/update", data);
+export const deleteLoggedInUserApi = () => axios.delete("/auth/delete");
+
 
 

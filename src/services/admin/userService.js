@@ -5,7 +5,8 @@ import {
   deleteOneUserApi,
   getOneUserApi,
   getLoggedInUserApi,
-  updateLoggedInUserApi
+  updateLoggedInUserApi,
+  deleteLoggedInUserApi
 
 } from "../../api/admin/userApi";
 
@@ -77,3 +78,12 @@ export const updateLoggedInUserService = async (data) => {
     throw err.response?.data || { message: "Failed to update user profile" };
   }
 };
+export const deleteLoggedInUserService = async () => {
+  try {
+    const response = await deleteLoggedInUserApi();
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || { message: "Failed to delete account" };
+  }
+};
+

@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getLoggedInUserApi, updateLoggedInUserApi } from "../api/admin/userApi";
+import { getLoggedInUserApi, updateLoggedInUserApi, deleteLoggedInUserApi } from "../api/admin/userApi";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 
 // Fetch logged-in user profile
 const fetchUserProfile = async () => {
@@ -32,6 +34,24 @@ export const useUpdateUserProfile = () => {
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Failed to update profile.");
+    },
+  });
+};
+
+export const useDeleteUserProfile = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate(); // You can replace this with your actual navigation method
+
+  return useMutation({
+    mutationFn: deleteLoggedInUserApi,
+    onSuccess: () => {
+      toast.success("Account deleted successfully");
+      queryClient.clear();
+      localStorage.clear();
+      navigate("/login");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Failed to delete account.");
     },
   });
 };
