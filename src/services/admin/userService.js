@@ -6,7 +6,9 @@ import {
   getOneUserApi,
   getLoggedInUserApi,
   updateLoggedInUserApi,
-  deleteLoggedInUserApi
+  deleteLoggedInUserApi,
+  resetPasswordApi,
+  sendResetLinkApi
 
 } from "../../api/admin/userApi";
 
@@ -87,3 +89,22 @@ export const deleteLoggedInUserService = async () => {
   }
 };
 
+// Send password reset link to email
+export const sendResetLinkService = async (email) => {
+  try {
+    const response = await sendResetLinkApi(email);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || { message: "Failed to send reset link" };
+  }
+};
+
+// Reset password using token
+export const resetPasswordService = async (token, password) => {
+  try {
+    const response = await resetPasswordApi(token, password);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || { message: "Failed to reset password" };
+  }
+};

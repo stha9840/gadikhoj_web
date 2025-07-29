@@ -15,6 +15,8 @@ import BookingTable from "../components/BookingTable";
 import VehicleDetailPage from "../components/VehicleDetailsPage/VehicleDetailsPage";
 import SearchResultsPage from "../components/Search/SearchResultsPage";
 import UserProfilePage from "../pages/UserProfilePage";
+import AboutUs from "../pages/AboutUs";
+import ResetPasswordPage from "../components/auth/ResetPasswordPage";
 
 
 import AdminRoute from "./AdminRoute";
@@ -53,6 +55,7 @@ const AppRouter = () => {
           <Route path="/vehicles/:id" element={<VehicleDetailPage />} />
           <Route path="/search" element={<SearchResultsPage />} /> 
           <Route path="/profile" element={<UserProfilePage />} /> 
+          <Route path="/about" element={<AboutUs />} /> 
         </Route>
       </Route>
 
@@ -60,6 +63,7 @@ const AppRouter = () => {
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/login" replace />} />

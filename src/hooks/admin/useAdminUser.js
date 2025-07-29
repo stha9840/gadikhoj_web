@@ -5,7 +5,7 @@ import axios from 'axios';
 
 //useQuery -> Get request state
 import { useState } from "react";
-import { getAllUserService, createUserService, updateUserService, deleteUserService, getOneUserService, getLoggedInUserService,updateLoggedInUserService  } from "../../services/admin/userService";
+import { getAllUserService, createUserService, updateUserService, deleteUserService, getOneUserService, getLoggedInUserService,updateLoggedInUserService, sendResetLinkService, resetPasswordService  } from "../../services/admin/userService";
 
 export const useAdminUser = (page = 1, limit = 5) => {
   const query = useQuery({
@@ -115,3 +115,30 @@ export const useUpdateLoggedInUser = () => {
 };
 
 
+// 🔐 Forgot Password Hook
+export const useSendResetLink = () => {
+  return useMutation({
+    mutationKey: ["send_reset_link"],
+    mutationFn: sendResetLinkService,
+    onSuccess: (res) => {
+      toast.success(res.message || "Reset link sent to email");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to send reset link");
+    },
+  });
+};
+
+// 🔐 Reset Password Hook
+export const useResetPassword = () => {
+  return useMutation({
+    mutationKey: ["reset_password"],
+    mutationFn: ({ token, password }) => resetPasswordService(token, password),
+    onSuccess: (res) => {
+      toast.success(res.message || "Password has been reset");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to reset password");
+    },
+  });
+};

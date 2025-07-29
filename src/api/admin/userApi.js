@@ -11,5 +11,10 @@ export const getLoggedInUserApi = () => axios.get("/auth/me");
 export const updateLoggedInUserApi = (data) => axios.put("/auth/update", data);
 export const deleteLoggedInUserApi = () => axios.delete("/auth/delete");
 
+// Forgot/Reset Password
+export const sendResetLinkApi = (email) =>
+  axios.post("/admin/user/request-reset", { email });
 
+export const resetPasswordApi = (token, password) =>
+  axios.post(`/admin/user/reset-password/${token}`, { password });
 
