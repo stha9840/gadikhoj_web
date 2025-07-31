@@ -50,7 +50,7 @@ const Sidebar = () => (
 
     <div className="mt-auto">
       <h2 className="text-gray-400 text-xs font-semibold mb-2 px-2">SETTINGS</h2>
-      <SidebarItem icon={<FaCog />} label="Settings" to="/admin/settings" />
+      <SidebarItem icon={<FaCog />} label="Settings" to="/admin/setting" />
     </div>
   </aside>
 );

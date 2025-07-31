@@ -17,6 +17,7 @@ import SearchResultsPage from "../components/Search/SearchResultsPage";
 import UserProfilePage from "../pages/UserProfilePage";
 import AboutUs from "../pages/AboutUs";
 import ResetPasswordPage from "../components/auth/ResetPasswordPage";
+import AdminProfilePage from "../components/admin/AdminProfilePage";
 
 
 import AdminRoute from "./AdminRoute";
@@ -37,16 +38,10 @@ const AppRouter = () => {
           <Route path="vehicles" element={<VehicleDetailsTable />} />
           <Route path="vehicles/create" element={<CreateVehicleForm />} />
           <Route path="bookings" element={<BookingTable />} />
+          <Route path="setting" element={<AdminProfilePage/>} />
         </Route>
       </Route>
 
-      {/* User routes
-      <Route element={<UserRoute />}>
-        <Route element={<UserLayout />}>
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/mybooking" element={<MyBookingPage />} />
-        </Route>
-      </Route> */}
       <Route element={<UserRoute />}>
         <Route element={<UserLayout />}>
           <Route path="/home" element={<HomePage />} />
